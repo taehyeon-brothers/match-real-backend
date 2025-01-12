@@ -1,4 +1,4 @@
-package taehyeon.brothers.writeln_backend.domain
+package taehyeon.brothers.matchreal.domain
 
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode

@@ -1,6 +1,6 @@
-package taehyeon.brothers.writeln_backend.infrastructure.user
+package taehyeon.brothers.matchreal.infrastructure.user
 
 import org.springframework.data.jpa.repository.JpaRepository
-import taehyeon.brothers.writeln_backend.domain.User
+import taehyeon.brothers.matchreal.domain.User
 
 interface UserRepository : JpaRepository<User, Long>

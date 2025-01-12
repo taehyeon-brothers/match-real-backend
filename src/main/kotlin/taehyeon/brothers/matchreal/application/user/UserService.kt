@@ -1,4 +1,4 @@
-package taehyeon.brothers.writeln_backend.application.user
+package taehyeon.brothers.matchreal.application.user
 
 import org.springframework.stereotype.Service
 

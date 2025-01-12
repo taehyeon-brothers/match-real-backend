@@ -1,4 +1,4 @@
-package taehyeon.brothers.writeln_backend.application.daily
+package taehyeon.brothers.matchreal.application.daily
 
 import org.springframework.stereotype.Service
 

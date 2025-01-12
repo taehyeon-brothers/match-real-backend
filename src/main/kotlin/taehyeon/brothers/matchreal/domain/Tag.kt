@@ -1,4 +1,4 @@
-package taehyeon.brothers.writeln_backend.domain
+package taehyeon.brothers.matchreal.domain
 
 import jakarta.persistence.*
 import java.time.LocalDateTime
