@@ -15,8 +15,8 @@ class Tag(
     @JoinColumn(name = "diary_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     var daily: Daily,
 
-    @Column(name = "name", length = 50)
-    var value: String,
+    @Column(name = "tag_name", length = 50)
+    var tagName: String,
 
     @Column(name = "created_at", length = 40, nullable = false)
     var createdAt: LocalDateTime,
