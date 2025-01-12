@@ -1,6 +1,7 @@
 package taehyeon.brothers.writeln_backend.domain
 
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(name = "tags")
@@ -12,8 +13,11 @@ class Tag(
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "diary_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
-    var diary: Diary,
+    var daily: Daily,
 
-    @Column(name = "name", length = 100)
-    var name: String
+    @Column(name = "name", length = 50)
+    var value: String,
+
+    @Column(name = "created_at", length = 40, nullable = false)
+    var createdAt: LocalDateTime,
 )
