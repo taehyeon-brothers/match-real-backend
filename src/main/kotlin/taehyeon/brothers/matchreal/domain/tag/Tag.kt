@@ -15,10 +15,10 @@ class Tag(
     val id: Long = 0,
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "diary_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
+    @JoinColumn(name = "daily_id", foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     var daily: Daily,
 
-    @Column(name = "tag_name", length = 50)
+    @Column(length = 50)
     var tagName: String,
 ): BaseTimeEntity() {
 

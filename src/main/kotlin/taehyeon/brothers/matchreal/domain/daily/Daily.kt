@@ -29,15 +29,15 @@ class Daily(
     @JoinColumn(name = "user_id", nullable = false, foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     var user: User,
 
-    @Column(name = "image_name", length = 200, nullable = false)
+    @Column(length = 200, nullable = false)
     val imageName: String,
 
-    @Column(name = "image_content_type", length = 80, nullable = false)
+    @Column(length = 80, nullable = false)
     val imageContentType: String,
 
     @Lob
     @JdbcType(value = VarbinaryJdbcType::class)
-    @Column(columnDefinition = "bytea", name = "image_content", nullable = false)
+    @Column(columnDefinition = "bytea", nullable = false)
     var imageContent: ByteArray,
 ) : BaseTimeEntity() {
 
