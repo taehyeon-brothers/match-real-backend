@@ -1,4 +1,4 @@
-package taehyeon.brothers.writeln_backend.presentation.controller
+package taehyeon.brothers.matchreal.presentation.controller.user
 
 import org.springframework.web.bind.annotation.RestController
 
