@@ -53,8 +53,9 @@ class AuthService(
         return userRepository.findByOauthId(user.oauthId) ?: userRepository.save(user)
     }
 
-    fun findUserByAccessToken(accessToken: String): User? {
+    fun findUserByAccessToken(accessToken: String?): User? {
         return try {
+            if (accessToken == null) return null
             jwtTokenProvider.validateAccessToken(accessToken)
             val userId = jwtTokenProvider.getAccessTokenPayload(accessToken)
             userRepository.findById(userId.toLong()).orElse(null)
