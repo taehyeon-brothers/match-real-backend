@@ -18,9 +18,9 @@ class GoogleOAuthClient(
     @Value("\${oauth.google.client-secret}") private val clientSecret: String,
     @Value("\${oauth.google.auth-server-url}") private val authServerUrl: String,
     @Value("\${oauth.google.api-server-url}") private val apiServerUrl: String
-) : HttpClient(okHttpClient, objectMapper), OAuthClient {
+) : HttpClient(okHttpClient, objectMapper) {
 
-    override fun generateAccessToken(authorizationCode: String, redirectUri: String): String {
+    fun generateAccessToken(authorizationCode: String, redirectUri: String): String {
         val formBody = FormBody.Builder()
             .add("grant_type", "authorization_code")
             .add("code", authorizationCode)
@@ -33,7 +33,7 @@ class GoogleOAuthClient(
         return executeRequest<GoogleTokenResponse>(request).accessToken
     }
 
-    override fun getUserInfo(accessToken: String): User {
+    fun getUserInfo(accessToken: String): User {
         val request = buildGetRequest(
             url = "$apiServerUrl/oauth2/v2/userinfo",
             headers = mapOf("Authorization" to "Bearer $accessToken")

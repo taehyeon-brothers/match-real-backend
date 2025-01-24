@@ -43,6 +43,11 @@ dependencies {
 
 	implementation("com.squareup.okhttp3:okhttp:4.12.0")
 	implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
+
+	// JWT
+	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
 }
 
 kotlin {
