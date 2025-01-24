@@ -39,8 +39,10 @@ dependencies {
 	testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 	testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 
-	// Swagger UI
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.4.0")
+
+	implementation("com.squareup.okhttp3:okhttp:4.12.0")
+	implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 }
 
 kotlin {
