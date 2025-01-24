@@ -1,4 +1,4 @@
-package taehyeon.brothers.matchreal.domain
+package taehyeon.brothers.matchreal.domain.daily
 
 import jakarta.persistence.Column
 import jakarta.persistence.ConstraintMode

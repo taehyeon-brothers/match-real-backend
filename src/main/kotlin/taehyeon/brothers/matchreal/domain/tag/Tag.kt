@@ -1,6 +1,7 @@
-package taehyeon.brothers.matchreal.domain
+package taehyeon.brothers.matchreal.domain.tag
 
 import jakarta.persistence.*
+import taehyeon.brothers.matchreal.domain.daily.Daily
 import java.time.LocalDateTime
 
 @Entity
