@@ -45,9 +45,9 @@ dependencies {
 	implementation("com.squareup.okhttp3:logging-interceptor:4.12.0")
 
 	// JWT
-	implementation("io.jsonwebtoken:jjwt-api:0.11.5")
-	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.5")
-	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.5")
+	implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
+	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.12.5")
 
 	// Test
 	testImplementation("io.kotest:kotest-runner-junit5:5.8.0")

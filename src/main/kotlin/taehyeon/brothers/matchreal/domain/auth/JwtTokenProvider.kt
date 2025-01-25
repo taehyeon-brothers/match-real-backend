@@ -1,9 +1,10 @@
 package taehyeon.brothers.matchreal.domain.auth
 
-import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.SignatureAlgorithm
+import io.jsonwebtoken.io.Decoders
+import io.jsonwebtoken.security.Keys
+import javax.crypto.SecretKey
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import taehyeon.brothers.matchreal.domain.user.User
@@ -24,50 +25,61 @@ class JwtTokenProvider(
     @Value("\${security.jwt.refresh-token.expire-length}")
     private val refreshTokenValidityInMilliseconds: Long
 ) {
+    private val accessSigningKey: SecretKey by lazy {
+        Keys.hmacShaKeyFor(accessTokenSecretKey.toByteArray())
+    }
+    
+    private val refreshSigningKey: SecretKey by lazy {
+        Keys.hmacShaKeyFor(refreshTokenSecretKey.toByteArray())
+    }
+
     fun createAccessToken(user: User): String {
-        return createToken(user, accessTokenSecretKey, accessTokenValidityInMilliseconds)
+        return createToken(user, accessSigningKey, accessTokenValidityInMilliseconds)
     }
 
     fun createRefreshToken(user: User): String {
-        return createToken(user, refreshTokenSecretKey, refreshTokenValidityInMilliseconds)
+        return createToken(user, refreshSigningKey, refreshTokenValidityInMilliseconds)
     }
 
     fun validateAccessToken(token: String) {
-        validateToken(token, accessTokenSecretKey)
+        validateToken(token, accessSigningKey)
     }
 
     fun validateRefreshToken(token: String) {
-        validateToken(token, refreshTokenSecretKey)
+        validateToken(token, refreshSigningKey)
     }
 
     fun getAccessTokenPayload(token: String): String {
         return try {
-            val claims = Jwts.parser()
-                .setSigningKey(accessTokenSecretKey)
-                .parseClaimsJws(token)
-                .body
-            claims.subject
+            Jwts.parser()
+                .verifyWith(accessSigningKey)
+                .build()
+                .parseSignedClaims(token)
+                .payload
+                .subject
         } catch (e: Exception) {
             throw UnauthorizedException("Invalid access token", e)
         }
     }
 
-    private fun createToken(user: User, secretKey: String, validityInMilliseconds: Long): String {
-        val claims: Claims = Jwts.claims().setSubject(user.id.toString())
+    private fun createToken(user: User, key: SecretKey, validityInMilliseconds: Long): String {
         val now = Date()
         val validity = Date(now.time + validityInMilliseconds)
 
         return Jwts.builder()
-            .setClaims(claims)
-            .setIssuedAt(now)
-            .setExpiration(validity)
-            .signWith(SignatureAlgorithm.HS256, secretKey)
+            .subject(user.id.toString())
+            .issuedAt(now)
+            .expiration(validity)
+            .signWith(key)
             .compact()
     }
 
-    private fun validateToken(token: String, secretKey: String) {
+    private fun validateToken(token: String, key: SecretKey) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token)
+            Jwts.parser()
+                .verifyWith(key)
+                .build()
+                .parseSignedClaims(token)
         } catch (e: JwtException) {
             throw UnauthorizedException("Invalid token", e)
         } catch (e: IllegalArgumentException) {

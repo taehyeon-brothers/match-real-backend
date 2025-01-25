@@ -17,10 +17,10 @@ spring:
 security:
   jwt:
     access-token:
-      secret-key: dGVzdF9zZWNyZXRfa2V5X3Rlc3Rfc2VjcmV0X2tleV90ZXN0X3NlY3JldF9rZXk=
+      secret-key: VEVTVDEyMzQ1Njc4OTBBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1Njc4OTBBQkNERUZHSElKS0w=
       expire-length: 1800000 # 30분
     refresh-token:
-      secret-key: dGVzdF9zZWNyZXRfa2V5X3Rlc3Rfc2VjcmV0X2tleV90ZXN0X3NlY3JldF9rZXk=
+      secret-key: VEVTVDEyMzQ1Njc4OTBBQkNERUZHSElKS0xNTk9QUVJTVFVWV1hZWjEyMzQ1Njc4OTBBQkNERUZHSElKS0w=
       expire-length: 5184000000 # 60일
 
 oauth:
