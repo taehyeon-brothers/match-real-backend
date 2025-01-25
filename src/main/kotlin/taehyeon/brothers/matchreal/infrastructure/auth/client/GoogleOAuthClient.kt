@@ -9,6 +9,7 @@ import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.infrastructure.common.HttpClient
 import taehyeon.brothers.matchreal.infrastructure.auth.client.dto.GoogleTokenResponse
 import taehyeon.brothers.matchreal.infrastructure.auth.client.dto.GoogleUserResponse
+import taehyeon.brothers.matchreal.exception.OAuthException
 
 @Component
 class GoogleOAuthClient(
@@ -30,7 +31,8 @@ class GoogleOAuthClient(
             .build()
 
         val request = buildPostRequest("$authServerUrl/token", formBody)
-        return executeRequest<GoogleTokenResponse>(request).accessToken
+        val response = executeRequest<GoogleTokenResponse>(request)
+        return response.accessToken ?: throw OAuthException("Access token is null")
     }
 
     fun getUserInfo(accessToken: String): User {

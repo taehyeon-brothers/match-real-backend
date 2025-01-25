@@ -34,4 +34,4 @@ class AuthController(
         authService.logout(user)
         return ResponseEntity.noContent().build()
     }
-} 
+}
