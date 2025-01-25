@@ -9,7 +9,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver
 import org.springframework.web.method.support.ModelAndViewContainer
 import taehyeon.brothers.matchreal.application.auth.service.AuthService
 import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.exception.UnauthorizedException
+import taehyeon.brothers.matchreal.exception.network.UnauthorizedException
 
 @Component
 class LoginUserArgumentResolver(
@@ -28,13 +28,13 @@ class LoginUserArgumentResolver(
         binderFactory: WebDataBinderFactory?
     ): User {
         val request = webRequest.getNativeRequest(HttpServletRequest::class.java)
-            ?: throw UnauthorizedException("Invalid request")
+            ?: throw UnauthorizedException(message = "Invalid request")
 
         val token = extractBearerToken(request)
-            ?: throw UnauthorizedException("Authorization header is missing or invalid")
+            ?: throw UnauthorizedException(message = "Authorization header is missing or invalid")
 
         return authService.findUserByAccessToken(token)
-            ?: throw UnauthorizedException("Invalid access token")
+            ?: throw UnauthorizedException(message = "Invalid access token")
     }
 
     private fun extractBearerToken(request: HttpServletRequest): String? {

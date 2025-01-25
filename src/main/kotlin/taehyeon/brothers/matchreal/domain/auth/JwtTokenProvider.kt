@@ -1,14 +1,15 @@
 package taehyeon.brothers.matchreal.domain.auth
 
+import io.jsonwebtoken.Claims
 import io.jsonwebtoken.JwtException
 import io.jsonwebtoken.Jwts
-import io.jsonwebtoken.io.Decoders
+import io.jsonwebtoken.SignatureAlgorithm
 import io.jsonwebtoken.security.Keys
 import javax.crypto.SecretKey
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.exception.UnauthorizedException
+import taehyeon.brothers.matchreal.exception.network.UnauthorizedException
 import java.util.*
 
 @Component
@@ -58,7 +59,7 @@ class JwtTokenProvider(
                 .payload
                 .subject
         } catch (e: Exception) {
-            throw UnauthorizedException("Invalid access token", e)
+            throw UnauthorizedException(message = "Invalid access token. e: $e")
         }
     }
 
@@ -81,9 +82,9 @@ class JwtTokenProvider(
                 .build()
                 .parseSignedClaims(token)
         } catch (e: JwtException) {
-            throw UnauthorizedException("Invalid token", e)
+            throw UnauthorizedException(message = "Invalid token. e: $e")
         } catch (e: IllegalArgumentException) {
-            throw UnauthorizedException("Invalid token", e)
+            throw UnauthorizedException(message = "Invalid token. e: $e")
         }
     }
 } 

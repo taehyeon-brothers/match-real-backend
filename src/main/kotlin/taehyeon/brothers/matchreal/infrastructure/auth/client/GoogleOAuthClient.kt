@@ -6,7 +6,7 @@ import okhttp3.OkHttpClient
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.exception.OAuthException
+import taehyeon.brothers.matchreal.exception.client.ExternalApiException
 import taehyeon.brothers.matchreal.infrastructure.auth.client.dto.GoogleTokenResponse
 import taehyeon.brothers.matchreal.infrastructure.auth.client.dto.GoogleUserResponse
 import taehyeon.brothers.matchreal.infrastructure.common.HttpClient
@@ -37,7 +37,7 @@ class GoogleOAuthClient(
 
         val request = buildPostRequest("$authServerUrl/token", formBody)
         val response = executeRequest<GoogleTokenResponse>(request)
-        return response.accessToken ?: throw OAuthException("Access token is null")
+        return response.accessToken ?: throw ExternalApiException(message = "Access token is null")
     }
 
     fun getUserInfo(accessToken: String): User {

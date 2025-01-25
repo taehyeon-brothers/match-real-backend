@@ -12,10 +12,9 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import org.mockito.BDDMockito.given
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
-import taehyeon.brothers.matchreal.domain.auth.OAuthProvider
 import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.exception.NotFoundException
-import taehyeon.brothers.matchreal.exception.UnauthorizedException
+import taehyeon.brothers.matchreal.exception.database.EntityNotFoundException
+import taehyeon.brothers.matchreal.exception.network.UnauthorizedException
 import taehyeon.brothers.matchreal.infrastructure.auth.client.GoogleOAuthClient
 import taehyeon.brothers.matchreal.infrastructure.user.repository.UserRepository
 import taehyeon.brothers.matchreal.presentation.auth.dto.request.AuthorizationCodeRequest
@@ -109,7 +108,7 @@ class AuthServiceTest {
         val nonExistentToken = jwtTokenProvider.createRefreshToken(testUser)
 
         // when & then
-        assertThrows<NotFoundException> {
+        assertThrows<EntityNotFoundException> {
             authService.refreshAccessToken(nonExistentToken)
         }
     }
@@ -145,10 +144,9 @@ class AuthServiceTest {
         // given
         val invalidAccessToken = "invalid-access-token"
 
-        // when
-        val foundUser = authService.findUserByAccessToken(invalidAccessToken)
-
-        // then
-        assertThat(foundUser).isNull()
+        // when & then
+        assertThrows<UnauthorizedException> {
+            authService.findUserByAccessToken(invalidAccessToken)
+        }
     }
 } 

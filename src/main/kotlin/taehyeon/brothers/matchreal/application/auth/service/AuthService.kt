@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
 import taehyeon.brothers.matchreal.domain.user.User
+import taehyeon.brothers.matchreal.exception.database.EntityNotFoundException
 import taehyeon.brothers.matchreal.infrastructure.user.repository.UserRepository
-import taehyeon.brothers.matchreal.exception.NotFoundException
 import taehyeon.brothers.matchreal.infrastructure.auth.client.GoogleOAuthClient
 import taehyeon.brothers.matchreal.presentation.auth.dto.request.AuthorizationCodeRequest
 import taehyeon.brothers.matchreal.presentation.auth.dto.response.TokenResponse
@@ -20,8 +20,7 @@ class AuthService(
     @Transactional
     fun googleLogin(request: AuthorizationCodeRequest): TokenResponse {
         val accessToken = googleOAuthClient.generateAccessToken(request.code, request.redirectUri)
-        val user = googleOAuthClient.getUserInfo(accessToken)
-            .let { findOrCreateUser(it) }
+        val user = findOrCreateUser(googleOAuthClient.getUserInfo(accessToken))
 
         val jwtAccessToken = jwtTokenProvider.createAccessToken(user)
         val refreshToken = jwtTokenProvider.createRefreshToken(user)
@@ -37,7 +36,7 @@ class AuthService(
         jwtTokenProvider.validateRefreshToken(refreshToken)
 
         val user = userRepository.findByRefreshToken(refreshToken)
-            ?: throw NotFoundException("Not found User. refreshToken: $refreshToken")
+            ?: throw EntityNotFoundException(message = "Not found User. refreshToken: $refreshToken")
 
         val newAccessToken = jwtTokenProvider.createAccessToken(user)
         return TokenResponse(newAccessToken, refreshToken)
@@ -54,13 +53,11 @@ class AuthService(
     }
 
     fun findUserByAccessToken(accessToken: String?): User? {
-        return try {
-            if (accessToken == null) return null
-            jwtTokenProvider.validateAccessToken(accessToken)
-            val userId = jwtTokenProvider.getAccessTokenPayload(accessToken)
-            userRepository.findById(userId.toLong()).orElse(null)
-        } catch (e: Exception) {
-            null
+        if (accessToken == null) {
+            return null
         }
+        jwtTokenProvider.validateAccessToken(accessToken)
+        val userId = jwtTokenProvider.getAccessTokenPayload(accessToken)
+        return userRepository.findById(userId.toLong()).orElse(null)
     }
 } 

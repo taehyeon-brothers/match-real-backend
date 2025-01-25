@@ -6,7 +6,7 @@ import org.springframework.http.HttpMethod
 import org.springframework.stereotype.Component
 import org.springframework.web.servlet.HandlerInterceptor
 import taehyeon.brothers.matchreal.application.auth.service.AuthService
-import taehyeon.brothers.matchreal.exception.UnauthorizedException
+import taehyeon.brothers.matchreal.exception.network.UnauthorizedException
 
 @Component
 class LoginInterceptor(
@@ -19,10 +19,10 @@ class LoginInterceptor(
         }
 
         val accessToken = AuthorizationExtractor.extract(request)
-            ?: throw UnauthorizedException("Invalid Access Token")
+            ?: throw UnauthorizedException(message = "Invalid Access Token")
 
         if (authService.findUserByAccessToken(accessToken) == null) {
-            throw UnauthorizedException("Invalid Access Token: $accessToken")
+            throw UnauthorizedException(message = "Invalid Access Token: $accessToken")
         }
 
         return true

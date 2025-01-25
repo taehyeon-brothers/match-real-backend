@@ -5,7 +5,7 @@ import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.exception.UnauthorizedException
+import taehyeon.brothers.matchreal.exception.network.UnauthorizedException
 import java.util.Base64
 
 class JwtTokenProviderTest : DescribeSpec({

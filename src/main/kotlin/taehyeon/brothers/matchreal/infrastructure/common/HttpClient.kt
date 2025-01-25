@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody
-import taehyeon.brothers.matchreal.exception.OAuthException
+import taehyeon.brothers.matchreal.exception.client.ExternalApiException
 
 abstract class HttpClient(
     protected val okHttpClient: OkHttpClient,
@@ -16,7 +16,7 @@ abstract class HttpClient(
             requireNotNull(body) { "Response body cannot be null" }
             
             if (!response.isSuccessful) {
-                throw OAuthException("API call failed with status code: ${response.code}, response: $body")
+                throw ExternalApiException(message = "API call failed with status code: ${response.code}, response: $body")
             }
             
             objectMapper.readValue(body, T::class.java)
