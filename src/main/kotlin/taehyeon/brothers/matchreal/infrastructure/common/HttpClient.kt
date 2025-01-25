@@ -12,12 +12,13 @@ abstract class HttpClient(
 ) {
     protected inline fun <reified T> executeRequest(request: Request): T {
         return okHttpClient.newCall(request).execute().use { response ->
-            if (!response.isSuccessful) {
-                throw OAuthException("API call failed with status code: ${response.code}")
-            }
-            
             val body = response.body?.string()
             requireNotNull(body) { "Response body cannot be null" }
+            
+            if (!response.isSuccessful) {
+                throw OAuthException("API call failed with status code: ${response.code}, response: $body")
+            }
+            
             objectMapper.readValue(body, T::class.java)
         }
     }
