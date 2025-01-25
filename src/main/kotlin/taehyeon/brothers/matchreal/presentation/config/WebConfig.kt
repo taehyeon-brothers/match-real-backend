@@ -30,4 +30,4 @@ class WebConfig(
             .allowCredentials(true)
             .allowedMethods("*")
     }
-} 
+}

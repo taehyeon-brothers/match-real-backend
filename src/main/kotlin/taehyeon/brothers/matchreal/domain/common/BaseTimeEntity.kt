@@ -20,4 +20,4 @@ abstract class BaseTimeEntity {
     @Column(nullable = false)
     var updatedAt: LocalDateTime = LocalDateTime.now()
         protected set
-} 
+}

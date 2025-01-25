@@ -72,4 +72,4 @@ class User(
             profileImageUrl = profileImageUrl
         )
     }
-} 
+}

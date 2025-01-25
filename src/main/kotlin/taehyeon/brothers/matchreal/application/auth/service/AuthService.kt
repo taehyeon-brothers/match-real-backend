@@ -60,4 +60,4 @@ class AuthService(
         val userId = jwtTokenProvider.getAccessTokenPayload(accessToken)
         return userRepository.findById(userId.toLong()).orElse(null)
     }
-} 
+}

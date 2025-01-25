@@ -20,4 +20,4 @@ class AuthenticationPrincipalConfig(
     fun loginUserArgumentResolver(): LoginUserArgumentResolver {
         return LoginUserArgumentResolver(authService)
     }
-} 
+}

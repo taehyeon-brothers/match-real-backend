@@ -19,4 +19,4 @@ object UserFixture {
         oauthProvider = oauthProvider,
         profileImageUrl = profileImageUrl
     )
-} 
+}

@@ -14,4 +14,4 @@ data class ErrorResponse(
         val value: Any?,
         val reason: String
     )
-} 
+}

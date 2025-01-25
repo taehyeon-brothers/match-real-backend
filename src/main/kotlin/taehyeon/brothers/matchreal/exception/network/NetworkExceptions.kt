@@ -16,4 +16,4 @@ class UnauthorizedException(
 class ForbiddenException(
     override val errorCode: ErrorCode = ErrorCode.FORBIDDEN,
     override val message: String = errorCode.message
-) : NetworkException(errorCode, message) 
+) : NetworkException(errorCode, message)

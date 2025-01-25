@@ -42,4 +42,4 @@ class LoginUserArgumentResolver(
         if (!header.startsWith("Bearer ")) return null
         return header.substring(7)
     }
-} 
+}

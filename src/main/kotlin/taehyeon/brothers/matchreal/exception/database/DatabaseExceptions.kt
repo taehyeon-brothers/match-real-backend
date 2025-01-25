@@ -16,4 +16,4 @@ class DuplicateKeyException(
 class InvalidDataException(
     override val errorCode: ErrorCode = ErrorCode.INVALID_DATA,
     override val message: String = errorCode.message
-) : DatabaseException(errorCode, message) 
+) : DatabaseException(errorCode, message)

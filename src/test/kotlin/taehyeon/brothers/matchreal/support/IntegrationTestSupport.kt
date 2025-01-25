@@ -18,4 +18,4 @@ abstract class IntegrationTestSupport {
 
     @Autowired
     protected lateinit var objectMapper: ObjectMapper
-} 
+}

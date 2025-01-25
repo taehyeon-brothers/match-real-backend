@@ -20,4 +20,4 @@ class OkHttpConfig {
             .writeTimeout(10, TimeUnit.SECONDS)
             .build()
     }
-} 
+}

@@ -34,4 +34,4 @@ abstract class HttpClient(
             .url(url)
             .apply { headers.forEach { (key, value) -> addHeader(key, value) } }
             .build()
-} 
+}

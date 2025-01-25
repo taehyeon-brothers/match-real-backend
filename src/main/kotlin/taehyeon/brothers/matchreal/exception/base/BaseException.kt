@@ -25,4 +25,4 @@ abstract class ClientException(
 abstract class BusinessException(
     override val errorCode: ErrorCode,
     override val message: String = errorCode.message
-) : BaseException(errorCode, message) 
+) : BaseException(errorCode, message)

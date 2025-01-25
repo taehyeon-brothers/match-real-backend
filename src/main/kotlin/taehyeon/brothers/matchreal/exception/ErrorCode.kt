@@ -18,14 +18,11 @@ enum class ErrorCode(
     INVALID_DATA(HttpStatus.BAD_REQUEST, "D400", "유효하지 않은 데이터입니다"),
     
     // Client Exceptions
-    OAUTH_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C500", "OAuth 클라이언트 오류가 발생했습니다"),
     EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C501", "외부 API 호출 중 오류가 발생했습니다"),
     
     // Business Exceptions
-    INVALID_OPERATION(HttpStatus.BAD_REQUEST, "B400", "유효하지 않은 작업입니다"),
-    INVALID_STATE(HttpStatus.CONFLICT, "B409", "유효하지 않은 상태입니다"),
-    
+
     // Common
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "C400", "유효하지 않은 입력값입니다"),
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C500", "서버 내부 오류가 발생했습니다")
-} 
+}

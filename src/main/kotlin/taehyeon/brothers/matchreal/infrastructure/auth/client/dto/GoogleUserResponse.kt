@@ -23,4 +23,4 @@ data class GoogleUserResponse(
         oauthProvider = OAuthProvider.GOOGLE,
         profileImageUrl = picture
     )
-} 
+}

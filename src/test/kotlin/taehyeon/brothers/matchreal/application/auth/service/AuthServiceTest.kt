@@ -149,4 +149,4 @@ class AuthServiceTest {
             authService.findUserByAccessToken(invalidAccessToken)
         }
     }
-} 
+}

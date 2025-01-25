@@ -10,4 +10,4 @@ data class GoogleTokenResponse(
     val scope: String? = null,
     val tokenType: String? = null,
     val idToken: String? = null
-) 
+)

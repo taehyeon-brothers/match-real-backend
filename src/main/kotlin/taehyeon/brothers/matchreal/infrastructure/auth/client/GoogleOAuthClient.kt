@@ -47,4 +47,4 @@ class GoogleOAuthClient(
         )
         return executeRequest<GoogleUserResponse>(request).toUser()
     }
-} 
+}

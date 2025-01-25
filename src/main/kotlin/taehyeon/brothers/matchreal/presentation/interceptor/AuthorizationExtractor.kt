@@ -26,4 +26,4 @@ object AuthorizationExtractor {
         }
         return null
     }
-} 
+}

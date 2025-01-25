@@ -87,4 +87,4 @@ class JwtTokenProvider(
             throw UnauthorizedException(message = "Invalid token. e: $e")
         }
     }
-} 
+}
