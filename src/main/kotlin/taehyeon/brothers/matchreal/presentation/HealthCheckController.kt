@@ -1,4 +1,4 @@
-package taehyeon.brothers.matchreal.presentation.controller
+package taehyeon.brothers.matchreal.presentation
 
 import io.swagger.v3.oas.annotations.Operation
 import io.swagger.v3.oas.annotations.tags.Tag

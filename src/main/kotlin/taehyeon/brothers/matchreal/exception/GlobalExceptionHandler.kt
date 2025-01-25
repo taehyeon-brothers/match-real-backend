@@ -1,11 +1,9 @@
-package taehyeon.brothers.matchreal.presentation.advice
+package taehyeon.brothers.matchreal.exception
 
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import taehyeon.brothers.matchreal.exception.NotFoundException
-import taehyeon.brothers.matchreal.exception.UnauthorizedException
 
 @RestControllerAdvice
 class GlobalExceptionHandler {
