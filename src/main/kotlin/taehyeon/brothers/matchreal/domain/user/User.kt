@@ -3,6 +3,7 @@ package taehyeon.brothers.matchreal.domain.user
 import taehyeon.brothers.matchreal.domain.auth.OAuthProvider
 import taehyeon.brothers.matchreal.domain.common.BaseTimeEntity
 import jakarta.persistence.*
+import java.time.LocalDateTime
 
 @Entity
 @Table(

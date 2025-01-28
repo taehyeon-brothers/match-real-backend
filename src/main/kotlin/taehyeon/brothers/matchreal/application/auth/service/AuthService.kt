@@ -27,7 +27,6 @@ class AuthService(
         
         user.updateRefreshToken(refreshToken)
         userRepository.save(user)
-
         return TokenResponse(jwtAccessToken, refreshToken)
     }
 
