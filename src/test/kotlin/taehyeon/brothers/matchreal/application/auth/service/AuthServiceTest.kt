@@ -7,10 +7,11 @@ import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.shouldNotBe
 import io.kotest.assertions.throwables.shouldThrow
-import org.mockito.BDDMockito.given
+import io.mockk.every
+import io.mockk.verify
+import io.mockk.clearAllMocks
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
@@ -21,6 +22,7 @@ import taehyeon.brothers.matchreal.infrastructure.auth.client.GoogleOAuthClient
 import taehyeon.brothers.matchreal.infrastructure.user.repository.UserRepository
 import taehyeon.brothers.matchreal.presentation.auth.dto.request.AuthorizationCodeRequest
 import taehyeon.brothers.matchreal.support.fixture.UserFixture
+import com.ninjasquad.springmockk.MockkBean
 
 @SpringBootTest
 @Transactional
@@ -38,12 +40,13 @@ class AuthServiceTest : DescribeSpec() {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
-    @MockBean
+    @MockkBean
     private lateinit var googleOAuthClient: GoogleOAuthClient
 
     init {
         this.beforeTest {
             userRepository.deleteAll()
+            clearAllMocks()
         }
 
         describe("Google 로그인") {
@@ -60,10 +63,8 @@ class AuthServiceTest : DescribeSpec() {
                         nickname = "New User"
                     )
 
-                    given(googleOAuthClient.generateAccessToken(code, redirectUri))
-                        .willReturn(accessToken)
-                    given(googleOAuthClient.getUserInfo(accessToken))
-                        .willReturn(newUser)
+                    every { googleOAuthClient.generateAccessToken(code, redirectUri) } returns accessToken
+                    every { googleOAuthClient.getUserInfo(accessToken) } returns newUser
 
                     // when
                     val response = authService.googleLogin(request)
@@ -75,6 +76,11 @@ class AuthServiceTest : DescribeSpec() {
                     val savedUser = userRepository.findByOauthId(newUser.oauthId)
                     savedUser.shouldNotBeNull()
                     savedUser.refreshToken.shouldNotBeNull()
+
+                    verify(exactly = 1) {
+                        googleOAuthClient.generateAccessToken(code, redirectUri)
+                        googleOAuthClient.getUserInfo(accessToken)
+                    }
                 }
             }
         }

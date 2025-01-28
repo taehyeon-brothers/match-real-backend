@@ -3,11 +3,11 @@ package taehyeon.brothers.matchreal.presentation.auth.controller
 import io.kotest.core.spec.style.DescribeSpec
 import io.kotest.core.test.TestCase
 import io.kotest.extensions.spring.SpringExtension
-import org.mockito.BDDMockito.given
+import io.mockk.every
+import io.mockk.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.test.web.servlet.MockMvc
@@ -22,6 +22,8 @@ import taehyeon.brothers.matchreal.presentation.auth.dto.request.AuthorizationCo
 import taehyeon.brothers.matchreal.presentation.auth.dto.request.RefreshTokenRequest
 import taehyeon.brothers.matchreal.support.fixture.UserFixture
 import com.fasterxml.jackson.databind.ObjectMapper
+import com.ninjasquad.springmockk.MockkBean
+import io.mockk.clearAllMocks
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -43,11 +45,12 @@ class AuthControllerTest : DescribeSpec() {
     @Autowired
     private lateinit var objectMapper: ObjectMapper
 
-    @MockBean
+    @MockkBean
     private lateinit var googleOAuthClient: GoogleOAuthClient
 
     override suspend fun beforeTest(testCase: TestCase) {
         userRepository.deleteAll()
+        clearAllMocks()
     }
 
     init {
@@ -65,10 +68,8 @@ class AuthControllerTest : DescribeSpec() {
                         nickname = "New User"
                     )
 
-                    given(googleOAuthClient.generateAccessToken(code, redirectUri))
-                        .willReturn(accessToken)
-                    given(googleOAuthClient.getUserInfo(accessToken))
-                        .willReturn(newUser)
+                    every { googleOAuthClient.generateAccessToken(code, redirectUri) } returns accessToken
+                    every { googleOAuthClient.getUserInfo(accessToken) } returns newUser
 
                     // when & then
                     mockMvc.perform(
@@ -79,6 +80,11 @@ class AuthControllerTest : DescribeSpec() {
                         .andExpect(status().isOk)
                         .andExpect(jsonPath("$.accessToken").exists())
                         .andExpect(jsonPath("$.refreshToken").exists())
+
+                    verify(exactly = 1) { 
+                        googleOAuthClient.generateAccessToken(code, redirectUri)
+                        googleOAuthClient.getUserInfo(accessToken)
+                    }
                 }
             }
         }
