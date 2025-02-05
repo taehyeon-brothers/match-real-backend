@@ -11,11 +11,11 @@ import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import taehyeon.brothers.matchreal.domain.common.BaseTimeEntity
 import taehyeon.brothers.matchreal.domain.user.User
-import java.time.LocalDateTime
 
 @Entity
-@Table(name = "diaries")
+@Table(name = "dailies")
 class Daily(
 
     @Id
@@ -28,7 +28,15 @@ class Daily(
 
     @Column(name = "image_url", length = 200, nullable = false)
     var imageUrl: String,
+) : BaseTimeEntity() {
 
-    @Column(name = "created_at", length = 40, nullable = false)
-    var createdAt: LocalDateTime,
-)
+    companion object {
+        fun createForm(
+            user: User,
+            imageUrl: String
+        ) = Daily(
+            user = user,
+            imageUrl = imageUrl,
+        )
+    }
+}

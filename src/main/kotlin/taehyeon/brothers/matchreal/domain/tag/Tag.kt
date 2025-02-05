@@ -3,6 +3,8 @@ package taehyeon.brothers.matchreal.domain.tag
 import jakarta.persistence.*
 import taehyeon.brothers.matchreal.domain.daily.Daily
 import java.time.LocalDateTime
+import taehyeon.brothers.matchreal.domain.common.BaseTimeEntity
+import taehyeon.brothers.matchreal.domain.user.User
 
 @Entity
 @Table(name = "tags")
@@ -18,7 +20,15 @@ class Tag(
 
     @Column(name = "tag_name", length = 50)
     var tagName: String,
+): BaseTimeEntity() {
 
-    @Column(name = "created_at", length = 40, nullable = false)
-    var createdAt: LocalDateTime,
-)
+    companion object {
+        fun createForm(
+            daily: Daily,
+            tagName: String,
+        ) = Tag(
+            daily = daily,
+            tagName = tagName,
+        )
+    }
+}
