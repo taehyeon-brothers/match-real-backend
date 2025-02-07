@@ -11,16 +11,18 @@ enum class ErrorCode(
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "N400", "잘못된 요청입니다"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "N401", "인증이 필요합니다"),
     FORBIDDEN(HttpStatus.FORBIDDEN, "N403", "접근이 거부되었습니다"),
-    
+
     // Database Exceptions
     ENTITY_NOT_FOUND(HttpStatus.NOT_FOUND, "D404", "엔티티를 찾을 수 없습니다"),
     DUPLICATE_KEY(HttpStatus.CONFLICT, "D409", "중복된 키가 존재합니다"),
     INVALID_DATA(HttpStatus.BAD_REQUEST, "D400", "유효하지 않은 데이터입니다"),
-    
+
     // Client Exceptions
     EXTERNAL_API_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "C501", "외부 API 호출 중 오류가 발생했습니다"),
-    
+
     // Business Exceptions
+    IMAGE_URL_ERROR(HttpStatus.BAD_REQUEST, "B400", "이미지를 찾을 수 없습니다"),
+    DAILY_UPLOAD_TIME_ERROR(HttpStatus.BAD_REQUEST, "B400", "데일리는 13시부터 19시 사이에만 업로드 가능합니다"),
 
     // Common
     INVALID_INPUT_VALUE(HttpStatus.BAD_REQUEST, "C400", "유효하지 않은 입력값입니다"),
