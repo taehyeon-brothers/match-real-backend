@@ -1,6 +1,7 @@
 package taehyeon.brothers.matchreal.application.daily.service
 
 import java.time.LocalTime
+import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
@@ -19,8 +20,10 @@ class DailyService(
     fun uploadDaily(user: User, file: MultipartFile): Daily {
         validateUploadTime()
         val filename = file.originalFilename ?: throw NotFoundImageException()
+        val fileContentType = file.contentType ?: MediaType.IMAGE_JPEG.type
+        val fileBinaryContent = file.bytes
 
-        val daily = Daily.createForm(user, filename)
+        val daily = Daily.createForm(user, filename, fileContentType, fileBinaryContent)
         return dailyRepository.save(daily)
     }
 

@@ -9,8 +9,11 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.JdbcType
+import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType
 import taehyeon.brothers.matchreal.domain.common.BaseTimeEntity
 import taehyeon.brothers.matchreal.domain.user.User
 
@@ -26,17 +29,29 @@ class Daily(
     @JoinColumn(name = "user_id", nullable = false, foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     var user: User,
 
-    @Column(name = "image_url", length = 200, nullable = false)
-    var imageUrl: String,
+    @Column(name = "image_name", length = 200, nullable = false)
+    val imageName: String,
+
+    @Column(name = "image_content_type", length = 80, nullable = false)
+    val imageContentType: String,
+
+    @Lob
+    @JdbcType(value = VarbinaryJdbcType::class)
+    @Column(columnDefinition = "bytea", name = "image_content", nullable = false)
+    var imageContent: ByteArray,
 ) : BaseTimeEntity() {
 
     companion object {
         fun createForm(
             user: User,
-            imageUrl: String
+            imageName: String,
+            imageContentType: String,
+            imageContent: ByteArray
         ) = Daily(
             user = user,
-            imageUrl = imageUrl,
+            imageName = imageName,
+            imageContentType = imageContentType,
+            imageContent = imageContent
         )
     }
 }

@@ -9,18 +9,22 @@ object DailyFixture {
     fun create(
         id: Long = 0L,
         user: User,
-        imageUrl: String = "testImg.img",
+        imageName: String = "클라이밍",
+        imageContentType: String = MediaType.IMAGE_JPEG.type,
+        imageContent: ByteArray = "testImg".toByteArray(),
     ): Daily = Daily(
         id = id,
         user = user,
-        imageUrl = imageUrl,
+        imageName = imageName,
+        imageContentType = imageContentType,
+        imageContent = imageContent,
     )
 
     fun createDailyImage(
-        name: String = "클라이밍",
-        fileName: String = "test_img.jpg",
-        contentType: String = MediaType.MULTIPART_FORM_DATA_VALUE,
-        content: String = "file",
+        name: String = "test",
+        fileName: String = "클라이밍",
+        contentType: String = MediaType.IMAGE_JPEG.type,
+        content: String = "testImg",
     ): MockMultipartFile = MockMultipartFile(
         name,
         fileName,

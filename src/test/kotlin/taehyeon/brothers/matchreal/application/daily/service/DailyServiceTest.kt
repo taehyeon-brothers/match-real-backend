@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
@@ -51,7 +52,10 @@ class DailyServiceTest {
 
         // then
         assertThat(daily).isNotNull()
-        daily.imageUrl shouldBe "test_img.jpg"
+        daily.user shouldBe testUser
+        daily.imageName shouldBe "클라이밍"
+        daily.imageContentType shouldBe MediaType.IMAGE_JPEG.type
+        daily.imageContent shouldBe "testImg".toByteArray()
     }
 
     @Test
@@ -70,6 +74,16 @@ class DailyServiceTest {
     @Test
     @DisplayName("데일리 업로드 - 13~19시 이외 시간대 업로드 시 예외 반환")
     fun dailyUploadTimeException() {
-        // TODO: 시간 관련 테스트 세팅 필요
+        // given
+        val dailyImage = DailyFixture.createDailyImage()
+
+        // when
+        // then
+        /**
+         * TODO: 테스트 내 시간 관련 커스텀 세팅 작업필요
+         * shouldThrow<DailyUploadTimeException> {
+         *             dailyService.uploadDaily(testUser, dailyImage)
+         *         }
+         */
     }
 }
