@@ -10,7 +10,6 @@ import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.exception.business.NotFoundImageException
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
 
-
 @Service
 @Transactional
 class DailyService(

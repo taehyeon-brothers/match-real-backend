@@ -1,7 +1,6 @@
 package taehyeon.brothers.matchreal.application.tag.service
 
 import org.springframework.stereotype.Service
-import org.springframework.transaction.event.TransactionalEventListener
 import org.springframework.web.multipart.MultipartFile
 import taehyeon.brothers.matchreal.domain.daily.Daily
 import taehyeon.brothers.matchreal.domain.tag.Tag
@@ -12,7 +11,6 @@ class TagService(
     private val tagRepository: TagRepository,
 ) {
 
-    @TransactionalEventListener
     fun addTagsByDailyImage(daily: Daily, dailyImage: MultipartFile): List<Tag> {
         /**
          * TODO: 딥러닝을 이용하여 이미지 파일로 태그 분류

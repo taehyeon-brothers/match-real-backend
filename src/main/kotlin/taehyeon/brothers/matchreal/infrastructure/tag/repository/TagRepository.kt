@@ -6,4 +6,6 @@ import taehyeon.brothers.matchreal.domain.tag.Tag
 
 @Repository
 interface TagRepository : JpaRepository<Tag, Long> {
+
+    fun findByDailyId(dailyId: Long): List<Tag>
 }
