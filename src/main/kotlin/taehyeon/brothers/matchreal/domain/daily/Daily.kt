@@ -9,13 +9,16 @@ import jakarta.persistence.GeneratedValue
 import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
+import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.Table
+import org.hibernate.annotations.JdbcType
+import org.hibernate.type.descriptor.jdbc.VarbinaryJdbcType
+import taehyeon.brothers.matchreal.domain.common.BaseTimeEntity
 import taehyeon.brothers.matchreal.domain.user.User
-import java.time.LocalDateTime
 
 @Entity
-@Table(name = "diaries")
+@Table(name = "dailies")
 class Daily(
 
     @Id
@@ -26,9 +29,29 @@ class Daily(
     @JoinColumn(name = "user_id", nullable = false, foreignKey = ForeignKey(ConstraintMode.NO_CONSTRAINT))
     var user: User,
 
-    @Column(name = "image_url", length = 200, nullable = false)
-    var imageUrl: String,
+    @Column(length = 200, nullable = false)
+    val imageName: String,
 
-    @Column(name = "created_at", length = 40, nullable = false)
-    var createdAt: LocalDateTime,
-)
+    @Column(length = 80, nullable = false)
+    val imageContentType: String,
+
+    @Lob
+    @JdbcType(value = VarbinaryJdbcType::class)
+    @Column(columnDefinition = "bytea", nullable = false)
+    var imageContent: ByteArray,
+) : BaseTimeEntity() {
+
+    companion object {
+        fun createForm(
+            user: User,
+            imageName: String,
+            imageContentType: String,
+            imageContent: ByteArray
+        ) = Daily(
+            user = user,
+            imageName = imageName,
+            imageContentType = imageContentType,
+            imageContent = imageContent
+        )
+    }
+}
