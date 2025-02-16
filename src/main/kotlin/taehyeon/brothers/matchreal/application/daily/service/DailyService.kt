@@ -9,6 +9,7 @@ import taehyeon.brothers.matchreal.domain.daily.Daily
 import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.exception.business.NotFoundImageException
+import taehyeon.brothers.matchreal.exception.database.EntityNotFoundException
 import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
 
@@ -36,5 +37,11 @@ class DailyService(
         if (now.isBefore(start) || now.isAfter(end)) {
             throw DailyUploadTimeException()
         }
+    }
+
+    @Transactional(readOnly = true)
+    fun findDailyById(dailyId: Long): Daily {
+        return dailyRepository.findById(dailyId)
+            .orElseThrow { EntityNotFoundException(message = "데일리가 존재하지 않습니다. dailyId: $dailyId") }
     }
 }

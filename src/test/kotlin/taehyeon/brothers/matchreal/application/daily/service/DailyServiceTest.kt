@@ -1,6 +1,7 @@
 package taehyeon.brothers.matchreal.application.daily.service
 
 import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
 import org.assertj.core.api.Assertions.assertThat
@@ -17,6 +18,7 @@ import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
 import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
+import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
 import taehyeon.brothers.matchreal.infrastructure.user.repository.UserRepository
 import taehyeon.brothers.matchreal.support.fixture.DailyFixture
 import taehyeon.brothers.matchreal.support.fixture.UserFixture
@@ -25,6 +27,9 @@ import taehyeon.brothers.matchreal.support.fixture.UserFixture
 @Transactional
 @ActiveProfiles("test")
 class DailyServiceTest {
+
+    @Autowired
+    private lateinit var dailyRepository: DailyRepository
 
     @Autowired
     private lateinit var dailyService: DailyService
@@ -41,14 +46,16 @@ class DailyServiceTest {
     @BeforeEach
     fun setUp() {
         LocalDateTimeHelper.fixCurrentTime(LocalDateTime.of(2025, 2, 16, 13, 30, 0))
-        testUser = UserFixture.create()
-        testRefreshToken = jwtTokenProvider.createRefreshToken(testUser)
-        testUser.updateRefreshToken(testRefreshToken)
-        userRepository.save(testUser)
+        val user = userRepository.save(UserFixture.create())
+        testRefreshToken = jwtTokenProvider.createRefreshToken(user)
+        user.updateRefreshToken(testRefreshToken)
+        testUser = userRepository.save(user)
     }
 
     @AfterEach
     fun tearDown() {
+        dailyRepository.deleteAll()
+        userRepository.deleteAll()
         LocalDateTimeHelper.unfixCurrentTime()
     }
 
@@ -94,5 +101,20 @@ class DailyServiceTest {
         shouldThrow<DailyUploadTimeException> {
             dailyService.uploadDaily(testUser, dailyImage)
         }
+    }
+
+    @Test
+    @DisplayName("데일리 조회")
+    fun findDailyById() {
+        // given
+        val daily = dailyRepository.save(DailyFixture.create(user = testUser))
+
+        // when
+        val result = dailyService.findDailyById(dailyId = daily.id)
+
+        // then
+        result.id shouldBeEqual daily.id
+        result.imageContentType shouldBe MediaType.IMAGE_JPEG.type
+        result.imageName shouldBeEqual "클라이밍"
     }
 }
