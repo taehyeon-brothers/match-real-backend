@@ -1,4 +1,4 @@
-package taehyeon.brothers.matchreal.presentation.user.dto
+package taehyeon.brothers.matchreal.presentation.user.dto.response
 
 import taehyeon.brothers.matchreal.domain.user.Gender
 import taehyeon.brothers.matchreal.domain.user.User
