@@ -9,6 +9,7 @@ import taehyeon.brothers.matchreal.domain.daily.Daily
 import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.exception.business.NotFoundImageException
+import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
 
 @Service
@@ -28,7 +29,7 @@ class DailyService(
     }
 
     private fun validateUploadTime() {
-        val now = LocalTime.now()
+        val now = LocalDateTimeHelper.now().toLocalTime()
         val start = LocalTime.of(13, 0)
         val end = LocalTime.of(19, 0)
 
