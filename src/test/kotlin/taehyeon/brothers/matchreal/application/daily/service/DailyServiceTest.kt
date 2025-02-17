@@ -1,7 +1,10 @@
 package taehyeon.brothers.matchreal.application.daily.service
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.matchers.shouldBe
+import java.time.LocalDateTime
 import org.assertj.core.api.Assertions.assertThat
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -12,6 +15,8 @@ import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
 import taehyeon.brothers.matchreal.domain.user.User
+import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
+import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
 import taehyeon.brothers.matchreal.infrastructure.user.repository.UserRepository
 import taehyeon.brothers.matchreal.support.fixture.DailyFixture
 import taehyeon.brothers.matchreal.support.fixture.UserFixture
@@ -35,10 +40,16 @@ class DailyServiceTest {
 
     @BeforeEach
     fun setUp() {
+        LocalDateTimeHelper.fixCurrentTime(LocalDateTime.of(2025, 2, 16, 13, 30, 0))
         testUser = UserFixture.create()
         testRefreshToken = jwtTokenProvider.createRefreshToken(testUser)
         testUser.updateRefreshToken(testRefreshToken)
         userRepository.save(testUser)
+    }
+
+    @AfterEach
+    fun tearDown() {
+        LocalDateTimeHelper.unfixCurrentTime()
     }
 
     @Test
@@ -75,15 +86,13 @@ class DailyServiceTest {
     @DisplayName("데일리 업로드 - 13~19시 이외 시간대 업로드 시 예외 반환")
     fun dailyUploadTimeException() {
         // given
+        LocalDateTimeHelper.fixCurrentTime(LocalDateTime.of(2025, 2, 16, 10, 30, 0))
         val dailyImage = DailyFixture.createDailyImage()
 
         // when
         // then
-        /**
-         * TODO: 테스트 내 시간 관련 커스텀 세팅 작업필요
-         * shouldThrow<DailyUploadTimeException> {
-         *             dailyService.uploadDaily(testUser, dailyImage)
-         *         }
-         */
+        shouldThrow<DailyUploadTimeException> {
+            dailyService.uploadDaily(testUser, dailyImage)
+        }
     }
 }
