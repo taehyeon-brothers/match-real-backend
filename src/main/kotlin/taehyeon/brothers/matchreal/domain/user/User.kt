@@ -36,13 +36,6 @@ class User(
 
     var openChatUrl: String? = null,
 
-    @ElementCollection
-    @CollectionTable(
-        name = "user_tags",
-        joinColumns = [JoinColumn(name = "user_id")]
-    )
-    var tags: MutableList<String> = mutableListOf(),
-
     @Column(nullable = false)
     val oauthId: String,
 

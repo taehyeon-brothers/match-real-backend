@@ -1,6 +1,8 @@
 package taehyeon.brothers.matchreal.application.tag.service
 
 import io.kotest.matchers.collections.shouldContainExactly
+import io.kotest.matchers.collections.shouldHaveSize
+import io.kotest.matchers.equals.shouldBeEqual
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
@@ -43,12 +45,15 @@ class TagServiceTest {
 
     @BeforeEach
     fun setUp() {
-        testUser = UserFixture.create()
-        testDaily = DailyFixture.create(user = testUser)
-        testRefreshToken = jwtTokenProvider.createRefreshToken(testUser)
-        testUser.updateRefreshToken(testRefreshToken)
-        userRepository.save(testUser)
-        dailyRepository.save(testDaily)
+        tagRepository.deleteAll()
+        dailyRepository.deleteAll()
+        userRepository.deleteAll()
+
+        val user = userRepository.save(UserFixture.create())
+        testRefreshToken = jwtTokenProvider.createRefreshToken(user)
+        user.updateRefreshToken(testRefreshToken)
+        testUser = userRepository.save(user)
+        testDaily = dailyRepository.save(DailyFixture.create(user = testUser))
     }
 
     @Test
@@ -63,5 +68,35 @@ class TagServiceTest {
         // then
         val tags = tagRepository.findByDailyId(testDaily.id)
         tags.map { it.tagName } shouldContainExactly listOf("연애", "기쁨", "성수동", "영화", "데이트")
+    }
+
+    @Test
+    @DisplayName("데일리 내 태그 추가")
+    fun addTagByUser() {
+        // given
+        val tagName = "제이온"
+
+        // when
+        val tagId = tagService.addTagByUser(testDaily.id, tagName)
+
+        // then
+        val result = tagRepository.findById(tagId).orElseThrow()
+        result.id shouldBeEqual tagId
+        result.daily shouldBeEqual testDaily
+        result.tagName shouldBeEqual tagName
+    }
+
+    @Test
+    @DisplayName("데일리 내 태그 제거")
+    fun removeTagByUser() {
+        // given
+        val tagId = tagRepository.save(DailyFixture.createTag(daily = testDaily)).id
+
+        // when
+        tagService.removeTagByUser(tagId = tagId)
+
+        // then
+        val tags = tagRepository.findByDailyId(testDaily.id)
+        tags shouldHaveSize 0
     }
 }
