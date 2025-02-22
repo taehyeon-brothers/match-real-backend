@@ -28,6 +28,6 @@ class UserService(
             introduction = request.introduction,
             openChatUrl = request.openChatUrl
         )
-        return userRepository.save(user)
+        return user;
     }
 }
