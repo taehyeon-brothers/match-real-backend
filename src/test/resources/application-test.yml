@@ -30,3 +30,8 @@ oauth:
     redirect-uri: http://localhost:8080/login/oauth2/code/google
     token-uri: https://oauth2.googleapis.com/token
     user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+
+swagger:
+  server:
+    url: http://localhost:8080
+    description: Test
