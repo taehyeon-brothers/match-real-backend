@@ -31,7 +31,7 @@ class DailyController(
     private val dailyService: DailyService,
     private val tagService: TagService,
 ) {
-    @PostMapping
+    @PostMapping(consumes = [MediaType.MULTIPART_FORM_DATA_VALUE])
     fun uploadDaily(
         @RequiredLogin user: User,
         @RequestParam(value = "file") dailyImage: MultipartFile,
