@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 @ActiveProfiles("test")
 @Transactional
 abstract class IntegrationTestSupport {
+
     @Autowired
     protected lateinit var mockMvc: MockMvc
 

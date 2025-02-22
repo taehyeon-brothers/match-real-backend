@@ -50,6 +50,20 @@ class User(
         this.refreshToken = newToken
     }
 
+    fun updateProfile(
+        nickname: String? = null,
+        gender: Gender? = null,
+        age: Int? = null,
+        introduction: String? = null,
+        openChatUrl: String? = null
+    ) {
+        nickname?.let { this.nickname = it }
+        gender?.let { this.gender = it }
+        age?.let { this.age = it }
+        introduction?.let { this.introduction = it }
+        openChatUrl?.let { this.openChatUrl = it }
+    }
+
     companion object {
         fun createFrom(
             nickname: String,
