@@ -2,7 +2,7 @@ name: MatchReal PR Checker [BE]
 
 on:
   push:
-    branches: [ main, feat/deploy ]
+    branches: [ main ]
 
 jobs:
   build:
