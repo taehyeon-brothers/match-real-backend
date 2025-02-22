@@ -118,4 +118,54 @@ class UserControllerTest : IntegrationTestSupport() {
             .andExpect(jsonPath("$.introduction").value(request.introduction))
             .andExpect(jsonPath("$.openChatUrl").value(request.openChatUrl))
     }
+
+    @Test
+    @DisplayName("다른 사용자의 프로필을 조회할 수 있다")
+    fun getOtherProfile() {
+        // given
+        val otherUser = UserFixture.create(
+            nickname = "다른사용자",
+            email = "other@example.com"
+        )
+        val savedOtherUser = userRepository.save(otherUser)
+
+        // when & then
+        mockMvc.perform(
+            get("/api/v1/users/${savedOtherUser.id}")
+                .header("Authorization", "Bearer $accessToken")
+        )
+            .andExpect(status().isOk)
+            .andExpect(jsonPath("$.id").value(savedOtherUser.id))
+            .andExpect(jsonPath("$.nickname").value(savedOtherUser.nickname))
+            .andExpect(jsonPath("$.email").value(savedOtherUser.email))
+            .andExpect(jsonPath("$.age").value(savedOtherUser.age))
+            .andExpect(jsonPath("$.gender").value(savedOtherUser.gender.toString()))
+            .andExpect(jsonPath("$.introduction").value(savedOtherUser.introduction))
+            .andExpect(jsonPath("$.profileImageUrl").value(savedOtherUser.profileImageUrl))
+            .andExpect(jsonPath("$.openChatUrl").value(savedOtherUser.openChatUrl))
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 사용자의 프로필을 조회하면 실패한다")
+    fun getOtherProfileWithNonExistentUser() {
+        // given
+        val nonExistentUserId = 9999L
+
+        // when & then
+        mockMvc.perform(
+            get("/api/v1/users/$nonExistentUserId")
+                .header("Authorization", "Bearer $accessToken")
+        )
+            .andExpect(status().isNotFound)
+            .andExpect(jsonPath("$.message").exists())
+    }
+
+    @Test
+    @DisplayName("토큰 없이 다른 사용자의 프로필을 조회하면 실패한다")
+    fun getOtherProfileWithoutToken() {
+        // when & then
+        mockMvc.perform(get("/api/v1/users/${testUser.id}"))
+            .andExpect(status().isUnauthorized)
+            .andExpect(jsonPath("$.message").exists())
+    }
 }
