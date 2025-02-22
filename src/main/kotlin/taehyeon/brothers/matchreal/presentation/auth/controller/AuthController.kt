@@ -1,5 +1,6 @@
 package taehyeon.brothers.matchreal.presentation.auth.controller
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import taehyeon.brothers.matchreal.application.auth.service.AuthService
@@ -30,6 +31,7 @@ class AuthController(
     }
 
     @DeleteMapping("/logout")
+    @SecurityRequirement(name = "JWT")
     fun logout(@RequiredLogin user: User): ResponseEntity<Unit> {
         authService.logout(user)
         return ResponseEntity.noContent().build()
