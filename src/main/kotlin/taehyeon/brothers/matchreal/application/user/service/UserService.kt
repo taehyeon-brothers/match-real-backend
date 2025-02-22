@@ -1,4 +1,4 @@
-package taehyeon.brothers.matchreal.application.user
+package taehyeon.brothers.matchreal.application.user.service
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -15,7 +15,7 @@ class UserService(
     @Transactional(readOnly = true)
     fun getUser(id: Long): User {
         return userRepository.findById(id)
-            .orElseThrow { EntityNotFoundException(message = "존재하지 않는 사용자입니다.") }
+            .orElseThrow { EntityNotFoundException(message = "존재하지 않는 사용자입니다. id: $id") }
     }
 
     @Transactional

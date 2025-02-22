@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
 import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.application.user.UserService
+import taehyeon.brothers.matchreal.application.user.service.UserService
 import taehyeon.brothers.matchreal.presentation.argumentresolver.RequiredLogin
 import taehyeon.brothers.matchreal.presentation.user.dto.response.UserResponse
 import taehyeon.brothers.matchreal.presentation.user.dto.request.UpdateUserRequest
