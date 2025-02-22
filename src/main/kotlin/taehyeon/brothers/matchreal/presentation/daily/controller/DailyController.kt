@@ -26,12 +26,12 @@ import taehyeon.brothers.matchreal.presentation.daily.dto.response.AddTagRespons
 
 @RestController
 @RequestMapping("/api/v1/daily")
+@SecurityRequirement(name = "JWT")
 class DailyController(
     private val dailyService: DailyService,
     private val tagService: TagService,
 ) {
     @PostMapping
-    @SecurityRequirement(name = "JWT")
     fun uploadDaily(
         @RequiredLogin user: User,
         @RequestParam(value = "file") dailyImage: MultipartFile,
@@ -50,7 +50,6 @@ class DailyController(
     }
 
     @GetMapping("/{dailyId}")
-    @SecurityRequirement(name = "JWT")
     fun getDaily(@PathVariable dailyId: Long): ResponseEntity<Resource> {
         val daily = dailyService.findDailyById(dailyId)
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -60,7 +59,6 @@ class DailyController(
     }
 
     @PostMapping("/{dailyId}/tag")
-    @SecurityRequirement(name = "JWT")
     fun addTagByUser(
         @RequiredLogin user: User,
         @PathVariable("dailyId") dailyId: Long,
@@ -71,7 +69,6 @@ class DailyController(
     }
 
     @DeleteMapping("/{dailyId}/tag/{tagId}")
-    @SecurityRequirement(name = "JWT")
     fun removeTagByUser(
         @RequiredLogin user: User,
         @PathVariable("dailyId") dailyId: Long,

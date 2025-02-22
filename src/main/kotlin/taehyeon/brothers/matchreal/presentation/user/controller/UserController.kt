@@ -10,9 +10,11 @@ import taehyeon.brothers.matchreal.application.user.service.UserService
 import taehyeon.brothers.matchreal.presentation.argumentresolver.RequiredLogin
 import taehyeon.brothers.matchreal.presentation.user.dto.response.UserResponse
 import taehyeon.brothers.matchreal.presentation.user.dto.request.UpdateUserRequest
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 
 @RestController
 @RequestMapping("/api/v1/users")
+@SecurityRequirement(name = "JWT")
 class UserController(
     private val userService: UserService
 ) {
