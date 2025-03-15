@@ -117,4 +117,24 @@ class DailyServiceTest {
         result.imageContentType shouldBe MediaType.IMAGE_JPEG.type
         result.imageName shouldBeEqual "클라이밍"
     }
+
+    @Test
+    @DisplayName("피드 데일리 목록 조회 - 최신순 정렬")
+    fun findAllDailies() {
+        // given
+        val daily1 = dailyRepository.save(DailyFixture.create(id = 1, user = testUser))
+        val daily2 = dailyRepository.save(DailyFixture.create(id = 2, user = testUser))
+        val daily3 = dailyRepository.save(DailyFixture.create(id = 3, user = testUser))
+        val daily4 = dailyRepository.save(DailyFixture.create(id = 4, user = testUser))
+        val daily5 = dailyRepository.save(DailyFixture.create(id = 5, user = testUser))
+
+        // when
+        val result = dailyService.findAllDailies(1, 2)
+
+        // then
+        result.currentPage shouldBeEqual 2
+        result.isEnd shouldBeEqual false
+        result.dailies[0].dailyId shouldBe daily3.id
+        result.dailies[1].dailyId shouldBe daily2.id
+    }
 }
