@@ -41,7 +41,7 @@ class UserControllerTest : IntegrationTestSupport() {
     fun getProfile() {
         // when & then
         mockMvc.perform(
-            get("/api/v1/users")
+            get("/api/v1/users/me")
                 .header("Authorization", "Bearer $accessToken")
         )
             .andExpect(status().isOk)
@@ -59,7 +59,7 @@ class UserControllerTest : IntegrationTestSupport() {
     @DisplayName("토큰이 없으면 프로필 조회에 실패한다")
     fun getProfileWithoutToken() {
         // when & then
-        mockMvc.perform(get("/api/v1/users"))
+        mockMvc.perform(get("/api/v1/users/me"))
             .andExpect(status().isUnauthorized)
             .andExpect(jsonPath("$.message").exists())
     }
@@ -69,7 +69,7 @@ class UserControllerTest : IntegrationTestSupport() {
     fun getProfileWithInvalidToken() {
         // when & then
         mockMvc.perform(
-            get("/api/v1/users")
+            get("/api/v1/users/me")
                 .header("Authorization", "Bearer invalid-token")
         )
             .andExpect(status().isUnauthorized)
@@ -85,7 +85,7 @@ class UserControllerTest : IntegrationTestSupport() {
 
         // when & then
         mockMvc.perform(
-            get("/api/v1/users")
+            get("/api/v1/users/me")
                 .header("Authorization", "Bearer $tokenForNonExistentUser")
         )
             .andExpect(status().isUnauthorized)

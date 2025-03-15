@@ -20,7 +20,7 @@ class UserController(
     private val userService: UserService
 ) {
 
-    @GetMapping
+    @GetMapping("/me")
     fun getProfile(@RequiredLogin user: User): UserResponse {
         val foundUser = userService.getUser(user.id)
         return UserResponse.from(foundUser)
