@@ -122,11 +122,11 @@ class DailyServiceTest {
     @DisplayName("피드 데일리 목록 조회 - 최신순 정렬")
     fun findAllDailies() {
         // given
-        val daily1 = dailyRepository.save(DailyFixture.create(id = 1, user = testUser))
-        val daily2 = dailyRepository.save(DailyFixture.create(id = 2, user = testUser))
-        val daily3 = dailyRepository.save(DailyFixture.create(id = 3, user = testUser))
-        val daily4 = dailyRepository.save(DailyFixture.create(id = 4, user = testUser))
-        val daily5 = dailyRepository.save(DailyFixture.create(id = 5, user = testUser))
+        val daily1 = dailyRepository.save(DailyFixture.create(user = testUser))
+        val daily2 = dailyRepository.save(DailyFixture.create(user = testUser))
+        val daily3 = dailyRepository.save(DailyFixture.create(user = testUser))
+        val daily4 = dailyRepository.save(DailyFixture.create(user = testUser))
+        val daily5 = dailyRepository.save(DailyFixture.create(user = testUser))
 
         // when
         val result = dailyService.findAllDailies(1, 2)
