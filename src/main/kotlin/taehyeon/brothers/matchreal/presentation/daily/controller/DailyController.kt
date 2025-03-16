@@ -24,6 +24,7 @@ import taehyeon.brothers.matchreal.presentation.daily.dto.request.TagAddRequest
 import taehyeon.brothers.matchreal.presentation.daily.dto.request.TagRemoveRequest
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.AddTagResponse
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.DailyUploadResponse
+import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedDailyResponses
 
 @RestController
 @RequestMapping("/api/v1/daily")
@@ -54,6 +55,16 @@ class DailyController(
             .contentType(MediaType.parseMediaType(daily.imageContentType))
             .contentLength(daily.imageContent.size.toLong())
             .body(InputStreamResource(ByteArrayResource(daily.imageContent)))
+    }
+
+    @GetMapping("/all")
+    fun getAll(
+        @RequiredLogin user: User,
+        @RequestParam page: Int,
+        @RequestParam size: Int
+    ): ResponseEntity<FeedDailyResponses> {
+        val response = dailyService.findAllDailies(page - 1, size)
+        return ResponseEntity.ok().body(response)
     }
 
     @PostMapping("/{dailyId}/tag")

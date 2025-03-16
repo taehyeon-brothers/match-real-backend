@@ -1,6 +1,8 @@
 package taehyeon.brothers.matchreal.application.daily.service
 
 import java.time.LocalTime
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,6 +14,8 @@ import taehyeon.brothers.matchreal.exception.business.NotFoundImageException
 import taehyeon.brothers.matchreal.exception.database.EntityNotFoundException
 import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
+import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedDailyResponses
+import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedRawDailyResponse
 
 @Service
 @Transactional
@@ -43,5 +47,19 @@ class DailyService(
     fun findDailyById(dailyId: Long): Daily {
         return dailyRepository.findById(dailyId)
             .orElseThrow { EntityNotFoundException(message = "데일리가 존재하지 않습니다. dailyId: $dailyId") }
+    }
+
+    @Transactional(readOnly = true)
+    fun findAllDailies(currentPage: Int, contentSize: Int): FeedDailyResponses {
+        // TODO("현재는 최신순 정렬, 이후 GPT API 연동 및 태그 유사도 순 반영할 것")
+
+        val requestPage = PageRequest.of(currentPage, contentSize, Sort.by("createdAt").descending())
+        val dailiesWithPageInfo = dailyRepository.findAllBy(requestPage)
+            .map { FeedRawDailyResponse.from(it) }
+        return FeedDailyResponses.of(
+            dailiesWithPageInfo.number + 1, // 프론트는 1페이지부터, Spring data jpa 페이지네이션은 0페이지부터 시작.
+            dailiesWithPageInfo.totalPages,
+            dailiesWithPageInfo.content
+        )
     }
 }
