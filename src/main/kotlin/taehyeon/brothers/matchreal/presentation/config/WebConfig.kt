@@ -22,6 +22,7 @@ class WebConfig(
         registry.addInterceptor(loginInterceptor)
             .addPathPatterns("/api/**")
             .excludePathPatterns("/**/login/**")
+            .excludePathPatterns("/api/health/**")
     }
 
     override fun addCorsMappings(registry: CorsRegistry) {
