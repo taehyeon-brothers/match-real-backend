@@ -1,6 +1,7 @@
 package taehyeon.brothers.matchreal.application.daily.service
 
 import java.time.LocalTime
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import taehyeon.brothers.matchreal.domain.daily.Daily
+import taehyeon.brothers.matchreal.domain.daily.event.DailyUploadedEvent
 import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.exception.business.NotFoundImageException
@@ -21,6 +23,7 @@ import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedRawDailyR
 @Transactional
 class DailyService(
     private val dailyRepository: DailyRepository,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
     fun uploadDaily(user: User, file: MultipartFile): Daily {
@@ -30,7 +33,11 @@ class DailyService(
         val fileBinaryContent = file.bytes
 
         val daily = Daily.createForm(user, filename, fileContentType, fileBinaryContent)
-        return dailyRepository.save(daily)
+        val savedDaily = dailyRepository.save(daily)
+        
+        applicationEventPublisher.publishEvent(DailyUploadedEvent(savedDaily.id))
+        
+        return savedDaily
     }
 
     private fun validateUploadTime() {

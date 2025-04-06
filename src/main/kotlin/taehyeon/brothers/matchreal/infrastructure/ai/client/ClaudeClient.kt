@@ -42,16 +42,15 @@ class ClaudeClient(
         return executeRequest<ClaudeSendMessageResponse>(httpRequest).getResponseText()
     }
 
-    fun chatWithImage(prompt: String, image: MultipartFile): String {
-        val imageBase64 = Base64.getEncoder().encodeToString(image.bytes)
-        val imageContentType = image.contentType ?: "image/jpeg"
+    fun chatWithImage(prompt: String, imageContent: ByteArray, contentType: String): String {
+        val imageBase64 = Base64.getEncoder().encodeToString(imageContent)
 
         val request = ClaudeSendMessageRequest(
             model = model,
             messages = listOf(
                 ClaudeSendMessageRequest.createPromptWithImage(
                     textContent = prompt,
-                    mediaType = imageContentType,
+                    mediaType = contentType,
                     base64Image = imageBase64
                 )
             )

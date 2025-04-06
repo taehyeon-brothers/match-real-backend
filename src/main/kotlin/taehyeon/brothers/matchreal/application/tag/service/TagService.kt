@@ -19,9 +19,13 @@ class TagService(
 ) {
 
     fun addTagsByDailyImage(daily: Daily, dailyImage: MultipartFile): List<Tag> {
+        return addTagsByDailyImage(daily, dailyImage.bytes, dailyImage.contentType ?: "image/jpeg")
+    }
+
+    fun addTagsByDailyImage(daily: Daily, imageContent: ByteArray, contentType: String): List<Tag> {
         val prompt = PromptUtil.readPromptFile("prompt/extract_image.md")
         
-        val aiResponse = claudeClient.chatWithImage(prompt, dailyImage)
+        val aiResponse = claudeClient.chatWithImage(prompt, imageContent, contentType)
         val tags = parseTagsFromResponse(aiResponse, daily)
         
         return tagRepository.saveAll(tags)
