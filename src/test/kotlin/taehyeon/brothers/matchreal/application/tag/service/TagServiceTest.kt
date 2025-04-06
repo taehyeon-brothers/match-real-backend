@@ -6,13 +6,17 @@ import io.kotest.matchers.equals.shouldBeEqual
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.kotlin.any
+import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.boot.test.mock.mockito.MockBean
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
 import taehyeon.brothers.matchreal.domain.daily.Daily
 import taehyeon.brothers.matchreal.domain.user.User
+import taehyeon.brothers.matchreal.infrastructure.ai.client.ClaudeClient
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
 import taehyeon.brothers.matchreal.infrastructure.tag.repository.TagRepository
 import taehyeon.brothers.matchreal.infrastructure.user.repository.UserRepository
@@ -39,6 +43,9 @@ class TagServiceTest {
     @Autowired
     private lateinit var jwtTokenProvider: JwtTokenProvider
 
+    @MockBean
+    private lateinit var claudeClient: ClaudeClient
+
     private lateinit var testUser: User
     private lateinit var testDaily: Daily
     private lateinit var testRefreshToken: String
@@ -61,6 +68,9 @@ class TagServiceTest {
     fun addTagsByDailyImage() {
         // given
         val dailyImage = DailyFixture.createDailyImage()
+
+        whenever(claudeClient.chatWithImage(any(), any(), any()))
+                .thenReturn("#연애, #기쁨, #성수동, #영화, #데이트")
 
         // when
         tagService.addTagsByDailyImage(testDaily, dailyImage)

@@ -9,12 +9,18 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
+import taehyeon.brothers.matchreal.domain.daily.event.DailyUploadedEvent
 import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
@@ -74,6 +80,24 @@ class DailyServiceTest {
         daily.imageName shouldBe "클라이밍"
         daily.imageContentType shouldBe MediaType.IMAGE_JPEG.type
         daily.imageContent shouldBe "testImg".toByteArray()
+    }
+
+    @Test
+    @DisplayName("데일리 업로드 시 이벤트 발행 확인")
+    fun dailyUploadPublishEvent() {
+        // given
+        val mockEventPublisher = mock(ApplicationEventPublisher::class.java)
+        val testDailyService = DailyService(dailyRepository, mockEventPublisher)
+        val dailyImage = DailyFixture.createDailyImage()
+        val eventCaptor = ArgumentCaptor.forClass(DailyUploadedEvent::class.java)
+
+        // when
+        val daily = testDailyService.uploadDaily(testUser, dailyImage)
+
+        // then
+        verify(mockEventPublisher, times(1)).publishEvent(eventCaptor.capture())
+        val capturedEvent = eventCaptor.value
+        capturedEvent.dailyId shouldBeEqual daily.id
     }
 
     @Test

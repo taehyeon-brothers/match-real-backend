@@ -7,7 +7,6 @@ import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
-import org.springframework.web.multipart.MultipartFile
 import taehyeon.brothers.matchreal.infrastructure.ai.client.dto.ClaudeSendMessageRequest
 import taehyeon.brothers.matchreal.infrastructure.ai.client.dto.ClaudeSendMessageResponse
 import taehyeon.brothers.matchreal.infrastructure.common.HttpClient
