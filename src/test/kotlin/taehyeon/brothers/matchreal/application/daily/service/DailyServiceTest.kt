@@ -1,6 +1,6 @@
 package taehyeon.brothers.matchreal.application.daily.service
 
-import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.equals.shouldBeEqual
 import io.kotest.matchers.shouldBe
 import java.time.LocalDateTime
@@ -22,17 +22,21 @@ import org.springframework.transaction.annotation.Transactional
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
 import taehyeon.brothers.matchreal.domain.daily.event.DailyUploadedEvent
 import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
+import taehyeon.brothers.matchreal.infrastructure.tag.repository.TagRepository
 import taehyeon.brothers.matchreal.infrastructure.user.repository.UserRepository
 import taehyeon.brothers.matchreal.support.fixture.DailyFixture
+import taehyeon.brothers.matchreal.support.fixture.TagFixture
 import taehyeon.brothers.matchreal.support.fixture.UserFixture
 
 @SpringBootTest
 @Transactional
 @ActiveProfiles("test")
 class DailyServiceTest {
+
+    @Autowired
+    private lateinit var tagRepository: TagRepository
 
     @Autowired
     private lateinit var dailyRepository: DailyRepository
@@ -87,7 +91,7 @@ class DailyServiceTest {
     fun dailyUploadPublishEvent() {
         // given
         val mockEventPublisher = mock(ApplicationEventPublisher::class.java)
-        val testDailyService = DailyService(dailyRepository, mockEventPublisher)
+        val testDailyService = DailyService(dailyRepository, tagRepository, mockEventPublisher)
         val dailyImage = DailyFixture.createDailyImage()
         val eventCaptor = ArgumentCaptor.forClass(DailyUploadedEvent::class.java)
 
@@ -118,14 +122,21 @@ class DailyServiceTest {
     fun findDailyById() {
         // given
         val daily = dailyRepository.save(DailyFixture.create(user = testUser))
+        val tag1 = tagRepository.save(TagFixture.create(daily = daily, tagName = "클라이밍"))
+        val tag2 = tagRepository.save(TagFixture.create(daily = daily, tagName = "정적취미"))
+        tagRepository.save(tag1)
+        tagRepository.save(tag2)
 
         // when
         val result = dailyService.findDailyById(dailyId = daily.id)
 
         // then
-        result.id shouldBeEqual daily.id
-        result.imageContentType shouldBe MediaType.IMAGE_JPEG.type
-        result.imageName shouldBeEqual "클라이밍"
+        result.dailyId shouldBe daily.id
+        result.dailyImage.exists() shouldBe true
+        result.user.id shouldBe daily.user.id
+        result.tags shouldHaveSize 2
+        result.tags.get(0).tagName shouldBe "클라이밍"
+        result.tags.get(1).tagName shouldBe "정적취미"
     }
 
     @Test
