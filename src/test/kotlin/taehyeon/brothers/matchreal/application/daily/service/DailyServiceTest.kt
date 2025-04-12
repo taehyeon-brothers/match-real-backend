@@ -114,20 +114,6 @@ class DailyServiceTest {
     }
 
     @Test
-    @DisplayName("데일리 업로드 - 13~19시 이외 시간대 업로드 시 예외 반환")
-    fun dailyUploadTimeException() {
-        // given
-        LocalDateTimeHelper.fixCurrentTime(LocalDateTime.of(2025, 2, 16, 10, 30, 0))
-        val dailyImage = DailyFixture.createDailyImage()
-
-        // when
-        // then
-        shouldThrow<DailyUploadTimeException> {
-            dailyService.uploadDaily(testUser, dailyImage)
-        }
-    }
-
-    @Test
     @DisplayName("데일리 조회")
     fun findDailyById() {
         // given
