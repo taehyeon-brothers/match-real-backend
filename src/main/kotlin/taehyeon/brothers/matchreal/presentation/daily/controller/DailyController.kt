@@ -1,9 +1,6 @@
 package taehyeon.brothers.matchreal.presentation.daily.controller
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
-import org.springframework.core.io.ByteArrayResource
-import org.springframework.core.io.InputStreamResource
-import org.springframework.core.io.Resource
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -23,6 +20,7 @@ import taehyeon.brothers.matchreal.presentation.argumentresolver.RequiredLogin
 import taehyeon.brothers.matchreal.presentation.daily.dto.request.TagAddRequest
 import taehyeon.brothers.matchreal.presentation.daily.dto.request.TagRemoveRequest
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.AddTagResponse
+import taehyeon.brothers.matchreal.presentation.daily.dto.response.DailyDetailResponse
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.DailyUploadResponse
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedDailyResponses
 
@@ -43,12 +41,9 @@ class DailyController(
     }
 
     @GetMapping("/{dailyId}")
-    fun getDaily(@PathVariable dailyId: Long): ResponseEntity<Resource> {
-        val daily = dailyService.findDailyById(dailyId)
-        return ResponseEntity.ok()
-            .contentType(MediaType.parseMediaType(daily.imageContentType))
-            .contentLength(daily.imageContent.size.toLong())
-            .body(InputStreamResource(ByteArrayResource(daily.imageContent)))
+    fun getDaily(@PathVariable dailyId: Long): ResponseEntity<DailyDetailResponse> {
+        val dailyDetailResponse = dailyService.findDailyById(dailyId)
+        return ResponseEntity.ok().body(dailyDetailResponse)
     }
 
     @GetMapping("/all")
