@@ -1,6 +1,7 @@
 package taehyeon.brothers.matchreal.application.daily.listener
 
 import org.slf4j.LoggerFactory
+import org.springframework.context.event.EventListener
 import org.springframework.stereotype.Component
 import org.springframework.transaction.event.TransactionPhase
 import org.springframework.transaction.event.TransactionalEventListener
@@ -16,7 +17,7 @@ class DailyEventListener(
 ) {
     private val log = LoggerFactory.getLogger(javaClass)
 
-    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    @EventListener
     fun handleDailyUploadedEvent(event: DailyUploadedEvent) {
         try {
             val daily = dailyRepository.findById(event.dailyId)

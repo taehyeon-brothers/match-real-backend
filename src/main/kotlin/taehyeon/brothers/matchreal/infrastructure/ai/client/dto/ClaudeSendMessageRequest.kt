@@ -27,6 +27,7 @@ data class ClaudeSendMessageRequest(
         ) : Content()
     }
 
+    @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
     data class Source(
         val type: String = "base64",
         val mediaType: String,
