@@ -9,12 +9,18 @@ import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.DisplayName
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentCaptor
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
+import org.mockito.Mockito.verify
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.http.MediaType
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
 import taehyeon.brothers.matchreal.domain.auth.JwtTokenProvider
+import taehyeon.brothers.matchreal.domain.daily.event.DailyUploadedEvent
 import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
@@ -77,6 +83,24 @@ class DailyServiceTest {
     }
 
     @Test
+    @DisplayName("데일리 업로드 시 이벤트 발행 확인")
+    fun dailyUploadPublishEvent() {
+        // given
+        val mockEventPublisher = mock(ApplicationEventPublisher::class.java)
+        val testDailyService = DailyService(dailyRepository, mockEventPublisher)
+        val dailyImage = DailyFixture.createDailyImage()
+        val eventCaptor = ArgumentCaptor.forClass(DailyUploadedEvent::class.java)
+
+        // when
+        val daily = testDailyService.uploadDaily(testUser, dailyImage)
+
+        // then
+        verify(mockEventPublisher, times(1)).publishEvent(eventCaptor.capture())
+        val capturedEvent = eventCaptor.value
+        capturedEvent.dailyId shouldBeEqual daily.id
+    }
+
+    @Test
     @DisplayName("데일리 업로드 - 이미 업로드를 한 케이스도 다른 이미지 업로드 시 정상으로 처리")
     fun dailyUploadDuplicate() {
         // given
@@ -87,20 +111,6 @@ class DailyServiceTest {
 
         // then
         assertThat(daily).isNotNull()
-    }
-
-    @Test
-    @DisplayName("데일리 업로드 - 13~19시 이외 시간대 업로드 시 예외 반환")
-    fun dailyUploadTimeException() {
-        // given
-        LocalDateTimeHelper.fixCurrentTime(LocalDateTime.of(2025, 2, 16, 10, 30, 0))
-        val dailyImage = DailyFixture.createDailyImage()
-
-        // when
-        // then
-        shouldThrow<DailyUploadTimeException> {
-            dailyService.uploadDaily(testUser, dailyImage)
-        }
     }
 
     @Test

@@ -12,12 +12,44 @@ data class ClaudeSendMessageRequest(
 ) {
     data class Message(
         val role: String = "user",
-        val content: String
+        val content: List<Content>
+    )
+
+    sealed class Content {
+        data class Text(
+            val type: String = "text",
+            val text: String
+        ) : Content()
+
+        data class Image(
+            val type: String = "image",
+            val source: Source
+        ) : Content()
+    }
+
+    data class Source(
+        val type: String = "base64",
+        val mediaType: String,
+        val data: String
     )
 
     companion object {
         fun createPrompt(content: String): Message {
-            return Message(content = content)
+            return Message(content = listOf(Content.Text(text = content)))
+        }
+
+        fun createPromptWithImage(textContent: String, mediaType: String, base64Image: String): Message {
+            return Message(
+                content = listOf(
+                    Content.Text(text = textContent),
+                    Content.Image(
+                        source = Source(
+                            mediaType = mediaType,
+                            data = base64Image
+                        )
+                    )
+                )
+            )
         }
     }
 }

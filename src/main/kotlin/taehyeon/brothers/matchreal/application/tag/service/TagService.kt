@@ -5,7 +5,9 @@ import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import taehyeon.brothers.matchreal.domain.daily.Daily
 import taehyeon.brothers.matchreal.domain.tag.Tag
+import taehyeon.brothers.matchreal.domain.util.PromptUtil
 import taehyeon.brothers.matchreal.exception.database.EntityNotFoundException
+import taehyeon.brothers.matchreal.infrastructure.ai.client.ClaudeClient
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
 import taehyeon.brothers.matchreal.infrastructure.tag.repository.TagRepository
 
@@ -13,21 +15,35 @@ import taehyeon.brothers.matchreal.infrastructure.tag.repository.TagRepository
 class TagService(
     private val tagRepository: TagRepository,
     private val dailyRepository: DailyRepository,
+    private val claudeClient: ClaudeClient,
 ) {
 
     fun addTagsByDailyImage(daily: Daily, dailyImage: MultipartFile): List<Tag> {
-        /**
-         * TODO: 딥러닝을 이용하여 이미지 파일로 태그 분류
-         * 현재는 임시로 mock tag 반환
-         */
-        val tags = listOf(
-            Tag.createForm(daily, "연애"),
-            Tag.createForm(daily, "기쁨"),
-            Tag.createForm(daily, "성수동"),
-            Tag.createForm(daily, "영화"),
-            Tag.createForm(daily, "데이트"),
-        )
+        return addTagsByDailyImage(daily, dailyImage.bytes, dailyImage.contentType ?: "image/jpeg")
+    }
+
+    fun addTagsByDailyImage(daily: Daily, imageContent: ByteArray, contentType: String): List<Tag> {
+        val prompt = PromptUtil.readPromptFile("prompt/extract_image.md")
+        
+        val aiResponse = claudeClient.chatWithImage(prompt, imageContent, contentType)
+        val tags = parseTagsFromResponse(aiResponse, daily)
+        
         return tagRepository.saveAll(tags)
+    }
+    
+    /**
+     * 응답 형식: #tag1, #tag2, #tag3
+     */
+    private fun parseTagsFromResponse(response: String, daily: Daily): List<Tag> {
+        return response
+            .trim()
+            .split(", ")
+            .map { it.trim() }
+            .filter { it.isNotEmpty() && it.startsWith("#") }
+            .map { tagText ->
+                val tagName = tagText.removePrefix("#").trim()
+                Tag.createForm(daily, tagName)
+            }
     }
 
     @Transactional

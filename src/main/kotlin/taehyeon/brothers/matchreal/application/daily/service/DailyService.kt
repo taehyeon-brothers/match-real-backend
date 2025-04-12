@@ -1,6 +1,6 @@
 package taehyeon.brothers.matchreal.application.daily.service
 
-import java.time.LocalTime
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
 import org.springframework.http.MediaType
@@ -8,11 +8,10 @@ import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import taehyeon.brothers.matchreal.domain.daily.Daily
+import taehyeon.brothers.matchreal.domain.daily.event.DailyUploadedEvent
 import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.exception.business.DailyUploadTimeException
 import taehyeon.brothers.matchreal.exception.business.NotFoundImageException
 import taehyeon.brothers.matchreal.exception.database.EntityNotFoundException
-import taehyeon.brothers.matchreal.infrastructure.common.LocalDateTimeHelper
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedDailyResponses
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedRawDailyResponse
@@ -21,26 +20,20 @@ import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedRawDailyR
 @Transactional
 class DailyService(
     private val dailyRepository: DailyRepository,
+    private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
     fun uploadDaily(user: User, file: MultipartFile): Daily {
-        validateUploadTime()
         val filename = file.originalFilename ?: throw NotFoundImageException()
         val fileContentType = file.contentType ?: MediaType.IMAGE_JPEG.type
         val fileBinaryContent = file.bytes
 
         val daily = Daily.createForm(user, filename, fileContentType, fileBinaryContent)
-        return dailyRepository.save(daily)
-    }
-
-    private fun validateUploadTime() {
-        val now = LocalDateTimeHelper.now().toLocalTime()
-        val start = LocalTime.of(13, 0)
-        val end = LocalTime.of(19, 0)
-
-        if (now.isBefore(start) || now.isAfter(end)) {
-            throw DailyUploadTimeException()
-        }
+        val savedDaily = dailyRepository.save(daily)
+        
+        applicationEventPublisher.publishEvent(DailyUploadedEvent(savedDaily.id))
+        
+        return savedDaily
     }
 
     @Transactional(readOnly = true)
