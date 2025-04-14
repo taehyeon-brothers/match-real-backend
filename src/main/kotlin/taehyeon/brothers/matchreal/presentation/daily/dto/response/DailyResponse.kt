@@ -1,8 +1,5 @@
 package taehyeon.brothers.matchreal.presentation.daily.dto.response
 
-import org.springframework.core.io.ByteArrayResource
-import org.springframework.core.io.InputStreamResource
-import org.springframework.core.io.Resource
 import taehyeon.brothers.matchreal.domain.daily.Daily
 import taehyeon.brothers.matchreal.domain.tag.Tag
 
@@ -50,7 +47,6 @@ data class FeedDailyResponses(
 
 data class FeedDailyResponse(
     val dailyId: Long,
-    val dailyImage: Resource,
     val userId: Long,
     val userNickname: String,
 ) {
@@ -58,7 +54,6 @@ data class FeedDailyResponse(
         fun from(feedRawDailyResponse: FeedRawDailyResponse): FeedDailyResponse {
             return FeedDailyResponse(
                 dailyId = feedRawDailyResponse.dailyId,
-                dailyImage = InputStreamResource(ByteArrayResource(feedRawDailyResponse.imageContent)),
                 userId = feedRawDailyResponse.userId,
                 userNickname = feedRawDailyResponse.userNickname,
             )
