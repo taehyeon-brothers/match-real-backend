@@ -1,6 +1,7 @@
 package taehyeon.brothers.matchreal.application.tag.service
 
 import org.springframework.stereotype.Service
+import org.springframework.transaction.annotation.Propagation
 import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.multipart.MultipartFile
 import taehyeon.brothers.matchreal.domain.daily.Daily
@@ -22,6 +23,7 @@ class TagService(
         return addTagsByDailyImage(daily, dailyImage.bytes, dailyImage.contentType ?: "image/jpeg")
     }
 
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     fun addTagsByDailyImage(daily: Daily, imageContent: ByteArray, contentType: String): List<Tag> {
         val prompt = PromptUtil.readPromptFile("prompt/extract_image.md")
         
