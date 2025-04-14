@@ -4,10 +4,29 @@ import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.InputStreamResource
 import org.springframework.core.io.Resource
 import taehyeon.brothers.matchreal.domain.daily.Daily
+import taehyeon.brothers.matchreal.domain.tag.Tag
 
 data class DailyUploadResponse(
     val dailyId: Long,
 )
+
+data class DailyDetailResponse(
+    val dailyId: Long,
+    val userId: Long,
+    val userNickname: String,
+    val tags: List<TagDetailResponse> = emptyList(),
+) {
+    companion object {
+        fun of(daily: Daily, tags: List<Tag>): DailyDetailResponse {
+            return DailyDetailResponse(
+                dailyId = daily.id,
+                userId = daily.user.id,
+                userNickname = daily.user.nickname,
+                tags = tags.map { TagDetailResponse(it.id, it.tagName) }
+            )
+        }
+    }
+}
 
 data class FeedDailyResponses(
     val currentPage: Int,
@@ -15,7 +34,11 @@ data class FeedDailyResponses(
     val dailies: List<FeedDailyResponse>,
 ) {
     companion object {
-        fun of(currentPage: Int, totalPage: Int, feedRawDailyResponses: List<FeedRawDailyResponse>): FeedDailyResponses {
+        fun of(
+            currentPage: Int,
+            totalPage: Int,
+            feedRawDailyResponses: List<FeedRawDailyResponse>
+        ): FeedDailyResponses {
             return FeedDailyResponses(
                 currentPage = currentPage,
                 isEnd = currentPage == totalPage,

@@ -13,6 +13,8 @@ import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.exception.business.NotFoundImageException
 import taehyeon.brothers.matchreal.exception.database.EntityNotFoundException
 import taehyeon.brothers.matchreal.infrastructure.daily.repository.DailyRepository
+import taehyeon.brothers.matchreal.infrastructure.tag.repository.TagRepository
+import taehyeon.brothers.matchreal.presentation.daily.dto.response.DailyDetailResponse
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedDailyResponses
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedRawDailyResponse
 
@@ -20,6 +22,7 @@ import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedRawDailyR
 @Transactional
 class DailyService(
     private val dailyRepository: DailyRepository,
+    private val tagRepository: TagRepository,
     private val applicationEventPublisher: ApplicationEventPublisher,
 ) {
 
@@ -30,14 +33,23 @@ class DailyService(
 
         val daily = Daily.createForm(user, filename, fileContentType, fileBinaryContent)
         val savedDaily = dailyRepository.save(daily)
-        
+
         applicationEventPublisher.publishEvent(DailyUploadedEvent(savedDaily.id))
-        
+
         return savedDaily
     }
 
     @Transactional(readOnly = true)
-    fun findDailyById(dailyId: Long): Daily {
+    fun findDailyById(dailyId: Long): DailyDetailResponse {
+        val tags = tagRepository.findByDailyId(dailyId)
+        val daily = dailyRepository.findById(dailyId)
+            .orElseThrow { EntityNotFoundException(message = "데일리가 존재하지 않습니다. dailyId: $dailyId") }
+        return DailyDetailResponse.of(daily, tags)
+    }
+
+    @Transactional(readOnly = true)
+    fun findDailyImageById(dailyId: Long): Daily {
+
         return dailyRepository.findById(dailyId)
             .orElseThrow { EntityNotFoundException(message = "데일리가 존재하지 않습니다. dailyId: $dailyId") }
     }

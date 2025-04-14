@@ -22,9 +22,10 @@ import taehyeon.brothers.matchreal.domain.user.User
 import taehyeon.brothers.matchreal.presentation.argumentresolver.RequiredLogin
 import taehyeon.brothers.matchreal.presentation.daily.dto.request.TagAddRequest
 import taehyeon.brothers.matchreal.presentation.daily.dto.request.TagRemoveRequest
-import taehyeon.brothers.matchreal.presentation.daily.dto.response.AddTagResponse
+import taehyeon.brothers.matchreal.presentation.daily.dto.response.DailyDetailResponse
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.DailyUploadResponse
 import taehyeon.brothers.matchreal.presentation.daily.dto.response.FeedDailyResponses
+import taehyeon.brothers.matchreal.presentation.daily.dto.response.TagDetailResponse
 
 @RestController
 @RequestMapping("/api/v1/daily")
@@ -43,8 +44,14 @@ class DailyController(
     }
 
     @GetMapping("/{dailyId}")
-    fun getDaily(@PathVariable dailyId: Long): ResponseEntity<Resource> {
+    fun getDaily(@PathVariable dailyId: Long): ResponseEntity<DailyDetailResponse> {
         val daily = dailyService.findDailyById(dailyId)
+        return ResponseEntity.ok(daily)
+    }
+
+    @GetMapping("/{dailyId}/image")
+    fun getDailyImage(@PathVariable dailyId: Long): ResponseEntity<Resource> {
+        val daily = dailyService.findDailyImageById(dailyId)
         return ResponseEntity.ok()
             .contentType(MediaType.parseMediaType(daily.imageContentType))
             .contentLength(daily.imageContent.size.toLong())
@@ -66,9 +73,9 @@ class DailyController(
         @RequiredLogin user: User,
         @PathVariable("dailyId") dailyId: Long,
         @RequestBody tagAddRequest: TagAddRequest,
-    ): ResponseEntity<AddTagResponse> {
+    ): ResponseEntity<TagDetailResponse> {
         val savedTagId = tagService.addTagByUser(dailyId, tagAddRequest.tagName)
-        return ResponseEntity.status(HttpStatus.CREATED).body(AddTagResponse(savedTagId, tagAddRequest.tagName))
+        return ResponseEntity.status(HttpStatus.CREATED).body(TagDetailResponse(savedTagId, tagAddRequest.tagName))
     }
 
     @DeleteMapping("/{dailyId}/tag/{tagId}")
