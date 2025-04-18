@@ -44,7 +44,14 @@ class DailyService(
         val tags = tagRepository.findByDailyId(dailyId)
         val daily = dailyRepository.findById(dailyId)
             .orElseThrow { EntityNotFoundException(message = "데일리가 존재하지 않습니다. dailyId: $dailyId") }
-        return DailyDetailResponse.of(daily, daily.user, tags)
+        return DailyDetailResponse.of(daily, tags)
+    }
+
+    @Transactional(readOnly = true)
+    fun findDailyImageById(dailyId: Long): Daily {
+
+        return dailyRepository.findById(dailyId)
+            .orElseThrow { EntityNotFoundException(message = "데일리가 존재하지 않습니다. dailyId: $dailyId") }
     }
 
     @Transactional(readOnly = true)

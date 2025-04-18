@@ -1,12 +1,7 @@
 package taehyeon.brothers.matchreal.presentation.daily.dto.response
 
-import org.springframework.core.io.ByteArrayResource
-import org.springframework.core.io.InputStreamResource
-import org.springframework.core.io.Resource
 import taehyeon.brothers.matchreal.domain.daily.Daily
 import taehyeon.brothers.matchreal.domain.tag.Tag
-import taehyeon.brothers.matchreal.domain.user.User
-import taehyeon.brothers.matchreal.presentation.user.dto.response.UserResponse
 
 data class DailyUploadResponse(
     val dailyId: Long,
@@ -14,26 +9,21 @@ data class DailyUploadResponse(
 
 data class DailyDetailResponse(
     val dailyId: Long,
-    val user: UserResponse,
-    val dailyImage: Resource,
-    val tags: List<TagDetailResponse>,
+    val userId: Long,
+    val userNickname: String,
+    val tags: List<TagDetailResponse> = emptyList(),
 ) {
     companion object {
-        fun of(daily: Daily, user: User, tags: List<Tag>): DailyDetailResponse {
+        fun of(daily: Daily, tags: List<Tag>): DailyDetailResponse {
             return DailyDetailResponse(
                 dailyId = daily.id,
-                user = UserResponse.from(user),
-                dailyImage = InputStreamResource(ByteArrayResource(daily.imageContent)),
+                userId = daily.user.id,
+                userNickname = daily.user.nickname,
                 tags = tags.map { TagDetailResponse(it.id, it.tagName) }
             )
         }
     }
 }
-
-data class TagDetailResponse(
-    val tagId: Long,
-    val tagName: String,
-)
 
 data class FeedDailyResponses(
     val currentPage: Int,
@@ -57,7 +47,6 @@ data class FeedDailyResponses(
 
 data class FeedDailyResponse(
     val dailyId: Long,
-    val dailyImage: Resource,
     val userId: Long,
     val userNickname: String,
 ) {
@@ -65,7 +54,6 @@ data class FeedDailyResponse(
         fun from(feedRawDailyResponse: FeedRawDailyResponse): FeedDailyResponse {
             return FeedDailyResponse(
                 dailyId = feedRawDailyResponse.dailyId,
-                dailyImage = InputStreamResource(ByteArrayResource(feedRawDailyResponse.imageContent)),
                 userId = feedRawDailyResponse.userId,
                 userNickname = feedRawDailyResponse.userNickname,
             )

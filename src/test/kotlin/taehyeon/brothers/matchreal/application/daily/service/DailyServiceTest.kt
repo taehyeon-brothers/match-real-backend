@@ -36,10 +36,10 @@ import taehyeon.brothers.matchreal.support.fixture.UserFixture
 class DailyServiceTest {
 
     @Autowired
-    private lateinit var tagRepository: TagRepository
+    private lateinit var dailyRepository: DailyRepository
 
     @Autowired
-    private lateinit var dailyRepository: DailyRepository
+    private lateinit var tagRepository: TagRepository
 
     @Autowired
     private lateinit var dailyService: DailyService
@@ -118,7 +118,7 @@ class DailyServiceTest {
     }
 
     @Test
-    @DisplayName("데일리 조회")
+    @DisplayName("데일리 및 태그 조회")
     fun findDailyById() {
         // given
         val daily = dailyRepository.save(DailyFixture.create(user = testUser))
@@ -132,11 +132,25 @@ class DailyServiceTest {
 
         // then
         result.dailyId shouldBe daily.id
-        result.dailyImage.exists() shouldBe true
-        result.user.id shouldBe daily.user.id
+        result.userId shouldBe daily.user.id
         result.tags shouldHaveSize 2
         result.tags.get(0).tagName shouldBe "클라이밍"
         result.tags.get(1).tagName shouldBe "정적취미"
+    }
+
+    @Test
+    @DisplayName("데일리 이미지 조회")
+    fun findDailyImageById() {
+        // given
+        val daily = dailyRepository.save(DailyFixture.create(user = testUser))
+
+        // when
+        val result = dailyService.findDailyImageById(dailyId = daily.id)
+
+        // then
+        result.id shouldBeEqual daily.id
+        result.imageContentType shouldBe MediaType.IMAGE_JPEG.type
+        result.imageName shouldBeEqual "클라이밍"
     }
 
     @Test
