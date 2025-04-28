@@ -150,7 +150,7 @@ class GlobalExceptionHandler {
             .internalServerError()
             .body(ErrorResponse(
                 code = ErrorCode.INTERNAL_SERVER_ERROR.code,
-                message = "서버 내부 오류가 발생했습니다",
+                message = "서버 내부 오류가 발생했습니다. err: $e",
                 path = request.requestURI
             ))
     }
