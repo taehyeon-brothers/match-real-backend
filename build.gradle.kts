@@ -6,6 +6,7 @@ plugins {
 	id("org.jetbrains.kotlin.plugin.allopen") version "1.9.25"
 	kotlin("plugin.jpa") version "1.9.25"
 	kotlin("plugin.noarg") version "1.9.25"
+	kotlin("kapt") version "1.9.25"
 }
 
 group = "taehyeon.brothers"
@@ -29,8 +30,14 @@ dependencies {
 
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.postgresql:postgresql:42.7.3")
+	// querydsl
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
-	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	implementation("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	implementation("jakarta.persistence:jakarta.persistence-api")
+	implementation("jakarta.annotation:jakarta.annotation-api")
+
+	kapt("com.querydsl:querydsl-apt:5.0.0:jakarta")
+	kapt("org.springframework.boot:spring-boot-configuration-processor")
 	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 
