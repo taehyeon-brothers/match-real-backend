@@ -63,7 +63,7 @@ class DailyController(
     fun getAll(
         @RequiredLogin user: User,
         @RequestParam(required = false) userId: Long?,
-        @RequestParam(required = false) targetDate: LocalDate? = LocalDate.now(),
+        @RequestParam(required = false) targetDate: LocalDate?,
         @RequestParam page: Int,
         @RequestParam size: Int
     ): ResponseEntity<FeedDailyResponses> {
