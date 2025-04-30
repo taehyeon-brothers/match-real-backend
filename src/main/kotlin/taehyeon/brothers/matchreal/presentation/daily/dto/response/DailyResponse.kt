@@ -38,7 +38,7 @@ data class FeedDailyResponses(
         ): FeedDailyResponses {
             return FeedDailyResponses(
                 currentPage = currentPage,
-                isEnd = currentPage == totalPage,
+                isEnd = totalPage == 0 || (currentPage == totalPage),
                 dailies = feedRawDailyResponses.map { FeedDailyResponse.from(it) }
             )
         }

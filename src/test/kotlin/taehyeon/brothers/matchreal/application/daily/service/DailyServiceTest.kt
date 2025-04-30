@@ -189,4 +189,22 @@ class DailyServiceTest {
         result.dailies[0].dailyId shouldBe daily4.id
         result.dailies[1].dailyId shouldBe daily3.id
     }
+
+    @Test
+    @DisplayName("피드 데일리 목록 조회 - 데일리가 없는 케이스")
+    fun findAllDailiesWithEmpty() {
+        // given
+        dailyRepository.save(DailyFixture.createWithBaseTime(user = testUser1, createdAt = today.minusDays(1)))
+        dailyRepository.save(DailyFixture.createWithBaseTime(user = testUser1, createdAt = today.minusDays(1)))
+        dailyRepository.save(DailyFixture.createWithBaseTime(user = testUser1, createdAt = today.plusDays(1)))
+        dailyRepository.save(DailyFixture.createWithBaseTime(user = testUser2, createdAt = today.plusDays(1)))
+
+        // when
+        val result = dailyService.findAllDailies(testUser1.id, today.toLocalDate(), 0, 2)
+
+        // then
+        result.currentPage shouldBeEqual 1
+        result.isEnd shouldBeEqual true
+        result.dailies.size shouldBeEqual 0
+    }
 }
