@@ -1,6 +1,7 @@
 package taehyeon.brothers.matchreal.presentation.daily.controller
 
 import io.swagger.v3.oas.annotations.security.SecurityRequirement
+import java.time.LocalDate
 import org.springframework.core.io.ByteArrayResource
 import org.springframework.core.io.InputStreamResource
 import org.springframework.core.io.Resource
@@ -61,10 +62,12 @@ class DailyController(
     @GetMapping("/all")
     fun getAll(
         @RequiredLogin user: User,
+        @RequestParam(required = false) userId: Long?,
+        @RequestParam(required = false) targetDate: LocalDate? = LocalDate.now(),
         @RequestParam page: Int,
         @RequestParam size: Int
     ): ResponseEntity<FeedDailyResponses> {
-        val response = dailyService.findAllDailies(page - 1, size)
+        val response = dailyService.findAllDailies(userId, targetDate, page - 1, size)
         return ResponseEntity.ok().body(response)
     }
 

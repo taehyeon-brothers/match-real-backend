@@ -1,5 +1,6 @@
 package taehyeon.brothers.matchreal.application.daily.service
 
+import java.time.LocalDate
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.data.domain.PageRequest
 import org.springframework.data.domain.Sort
@@ -55,12 +56,15 @@ class DailyService(
     }
 
     @Transactional(readOnly = true)
-    fun findAllDailies(currentPage: Int, contentSize: Int): FeedDailyResponses {
-        // TODO("현재는 최신순 정렬, 이후 GPT API 연동 및 태그 유사도 순 반영할 것")
-
+    fun findAllDailies(userId: Long?, targetDate: LocalDate?, currentPage: Int, contentSize: Int): FeedDailyResponses {
         val requestPage = PageRequest.of(currentPage, contentSize, Sort.by("createdAt").descending())
-        val dailiesWithPageInfo = dailyRepository.findAllBy(requestPage)
-            .map { FeedRawDailyResponse.from(it) }
+        val dailiesWithPageInfo = dailyRepository.findAllBy(
+            userId,
+            targetDate?.atStartOfDay(),
+            targetDate?.atStartOfDay()?.plusDays(1)?.minusNanos(1),
+            requestPage
+        ).map { FeedRawDailyResponse.from(it) }
+
         return FeedDailyResponses.of(
             dailiesWithPageInfo.number + 1, // 프론트는 1페이지부터, Spring data jpa 페이지네이션은 0페이지부터 시작.
             dailiesWithPageInfo.totalPages,
